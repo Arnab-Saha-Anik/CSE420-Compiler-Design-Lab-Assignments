@@ -8,17 +8,18 @@ int yyparse(void);
 int yylex(void);
 
 extern FILE *yyin;
-
+extern char *yytext;
 
 ofstream outlog;
 
-int lines;
+int lines = 1;
 
 // declare any other variables or functions needed here
+void yyerror(const char *s);
 
 %}
 
-%token IF FOR DO INT FLOAT VOID SWITCH DEFAULT GOTO ELSE WHILE BREAK CHAR DOUBLE RETURN CASE CONTINUE PRINTF ADDOP MULOP INCOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA COLON SEMICOLON ID CONST_INT CONST_FLOAT
+%token IF FOR DO INT FLOAT VOID SWITCH DEFAULT GOTO ELSE WHILE BREAK CHAR DOUBLE RETURN CASE CONTINUE PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA COLON SEMICOLON ID CONST_INT CONST_FLOAT
 
 %%
 
@@ -60,10 +61,10 @@ unit : var_declaration
 
 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 		{	
-			outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN paremeter_list RPAREN compound_statement "<<endl<<endl;
-			outlog<<$1->getname()<<" "<<$2->getname()<<"("<<$4->getname()<<")\n"<<$5->getname()<<endl<<endl;
+			outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement "<<endl<<endl;
+			outlog<<$1->getname()<<" "<<$2->getname()<<"("<<$4->getname()<<")\n"<<$6->getname()<<endl<<endl;
 			
-			$$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$5->getname(),"func_def");
+			$$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$6->getname(),"func_def");
 		}
 		| type_specifier ID LPAREN RPAREN compound_statement
 		{
@@ -108,15 +109,18 @@ parameter_list : parameter_list COMMA type_specifier ID
 compound_statement : LCURL statements RCURL
 			{
 				outlog<<"At line no: "<<lines<<" compound_statement : LCURL statements RCURL "<<endl<<endl;
-				outlog<<"{"<<$2->getname()<<"}"<<endl<<endl;
+				outlog<<"{\n"<<$2->getname()<<"\n}"<<endl<<endl;
 			
-				$$ = new symbol_info("{"+$2->getname()+"}","compound_statement");
+				$$ = new symbol_info("{\n"+$2->getname()+"\n}","compound_statement");
 			}
 			| LCURL RCURL
+			{
 				outlog<<"At line no: "<<lines<<" compound_statement : LCURL RCURL "<<endl<<endl;
-				outlog<<"{}"<<endl<<endl;
+				outlog<<"{\n}"<<endl<<endl;
 			
-				$$ = new symbol_info("{}","compound_statement");
+				$$ = new symbol_info("{\n}","compound_statement");
+			}
+			;
 
 var_declaration	: type_specifier declaration_list SEMICOLON
 			{
@@ -183,7 +187,7 @@ declaration_list : declaration_list COMMA ID
 statements : statement
 			{
 				outlog<<"At line no: "<<lines<<" statements : statement "<<endl<<endl;
-				outlog<<$1->getname()endl<<endl;
+				outlog<<$1->getname()<<endl<<endl;
 			
 				$$ = new symbol_info($1->getname(),"statements");				
 			}
@@ -224,6 +228,29 @@ statement : FOR LPAREN expression_statement expression_statement expression RPAR
 			
 			$$ = new symbol_info($1->getname(),"stmnt");		
 	  }
+	  	  | WHILE LPAREN expression RPAREN statement
+	  {
+	    	outlog<<"At line no: "<<lines<<" statement : WHILE LPAREN expression RPAREN statement "<<endl<<endl;
+			outlog<<"while("<<$3->getname()<<")\n"<<$5->getname()<<endl<<endl;
+			
+			$$ = new symbol_info("while("+$3->getname()+")\n"+$5->getname(),"stmnt");
+	  }
+	  | PRINTLN LPAREN ID RPAREN SEMICOLON
+	  {
+	    	outlog<<"At line no: "<<lines<<" statement : PRINTLN LPAREN ID RPAREN SEMICOLON "<<endl<<endl;
+			outlog<<"printf("<<$3->getname()<<");"<<endl<<endl;
+			
+			$$ = new symbol_info("printf("+$3->getname()+");","stmnt");
+	  }
+	  | RETURN expression SEMICOLON
+	  {
+	    	outlog<<"At line no: "<<lines<<" statement : RETURN expression SEMICOLON "<<endl<<endl;
+			outlog<<"return "<<$2->getname()<<";"<<endl<<endl;
+			
+			$$ = new symbol_info("return "+$2->getname()+";","stmnt");
+	  }
+
+
 	  | IF LPAREN expression RPAREN statement
 	  {
 	    	outlog<<"At line no: "<<lines<<" statement : IF LPAREN expression RPAREN statement "<<endl<<endl;
@@ -237,27 +264,6 @@ statement : FOR LPAREN expression_statement expression_statement expression RPAR
 			outlog<<"if("<<$3->getname()<<")\n"<<$5->getname()<<"else\n"<<$7->getname()<<endl<<endl;
 			
 			$$ = new symbol_info("if("+$3->getname()+")\n"+$5->getname()+"else\n"+$7->getname(),"stmnt");
-	  }
-	  | WHILE LPAREN expression RPAREN statement
-	  {
-	    	outlog<<"At line no: "<<lines<<" statement : WHILE LPAREN expression RPAREN statement "<<endl<<endl;
-			outlog<<"while("<<$3->getname()<<")\n"<<$5->getname()<<endl<<endl;
-			
-			$$ = new symbol_info("while("+$3->getname()+")\n"+$5->getname(),"stmnt");
-	  }
-	  | PRINTF LPAREN ID RPAREN SEMICOLON
-	  {
-	    	outlog<<"At line no: "<<lines<<" statement : PRINTF LPAREN ID RPAREN SEMICOLON "<<endl<<endl;
-			outlog<<"printf("<<$3->getname()<<");"<<endl<<endl;
-			
-			$$ = new symbol_info("printf("+$3->getname()+");","stmnt");
-	  }
-	  | RETURN expression SEMICOLON
-	  {
-	    	outlog<<"At line no: "<<lines<<" statement : RETURN expression SEMICOLON "<<endl<<endl;
-			outlog<<"return"<<$2->getname()<<";"<<endl<<endl;
-			
-			$$ = new symbol_info("return"+$2->getname()+";","stmnt");
 	  }
 	  ;
 
@@ -415,7 +421,7 @@ factor : variable
 				outlog<<"At line no: "<<lines<<" factor : LPAREN expression RPAREN "<<endl<<endl;
 				outlog<<"("<<$2->getname()<<")"<<endl<<endl;
 			
-				$$ = new symbol_info("("<<$2->getname()<<")","factor");				
+				$$ = new symbol_info("("+$2->getname()+")","factor");				
 			}
 			| CONST_INT
 			{		
@@ -425,19 +431,76 @@ factor : variable
 				$$ = new symbol_info($1->getname(),"factor");
 			}
 			| CONST_FLOAT
+			{		
+				outlog<<"At line no: "<<lines<<" factor : CONST_FLOAT "<<endl<<endl;
+				outlog<<$1->getname()<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname(),"factor");
+			}
+			| variable INCOP
+			{		
+				outlog<<"At line no: "<<lines<<" factor : variable INCOP "<<endl<<endl;
+				outlog<<$1->getname()<<"++"<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname()+"++","factor");
+			}
+			| variable DECOP
+			{		
+				outlog<<"At line no: "<<lines<<" factor : variable DECOP "<<endl<<endl;
+				outlog<<$1->getname()<<"--"<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname()+"--","factor");
+			}
+			;
 
+argument_list : arguments
+			{		
+				outlog<<"At line no: "<<lines<<" argument_list : arguments "<<endl<<endl;
+				outlog<<$1->getname()<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname(),"argument_list");
+			}
+			|
+			{		
+				outlog<<"At line no: "<<lines<<" argument_list : "<<endl<<endl;
+				outlog<<""<<endl<<endl;
+			
+				$$ = new symbol_info("","argument_list");
+			}
+			;
 
+arguments : arguments COMMA logic_expression
+			{		
+				outlog<<"At line no: "<<lines<<" arguments : arguments COMMA logic_expression "<<endl<<endl;
+				outlog<<$1->getname()<<", "<<$3->getname()<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname()+", "+$3->getname(),"arguments");
+			}
+			| logic_expression
+			{		
+				outlog<<"At line no: "<<lines<<" arguments : logic_expression "<<endl<<endl;
+				outlog<<$1->getname()<<endl<<endl;
+			
+				$$ = new symbol_info($1->getname(),"arguments");
+			}
+			;		
 
 %%
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s at line %d\n", s, lines);
+    fprintf(stderr, "Unexpected token: %s\n", yytext);
+}
 
 int main(int argc, char *argv[])
 {
 	if(argc != 2) 
 	{
         cout<<"No file is given"<<endl;
+		return 1;
 	}
 	yyin = fopen(argv[1], "r");
-	outlog.open("my_log.txt", ios::trunc);
+	outlog.open("22201299.txt", ios::trunc);
 	
 	if(yyin == NULL)
 	{
@@ -447,7 +510,7 @@ int main(int argc, char *argv[])
     
 	yyparse();
 	
-	printf("Total lines: %d", lines)
+	printf("Total lines: %d", lines);
 	
 	outlog.close();
 	
