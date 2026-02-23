@@ -26,19 +26,19 @@ extern ofstream outlog;
 
 /* Regular Definitions */
 
-delim	 [ \t\v\r]
+delim	 [ \t\v]
 
 /* write regular expressions for whitespace and newline */
 ws	{delim}+	 
 
-newline  \n
+newline  \r?\n
 
 letter_	 [A-Za-z_]
 digit	 [0-9]
 
 /* write regular expressions for id, float and integers */
 id	{letter_}({letter_}|{digit})*
-float  [+-]?{digit}*(\.{digit}+)?(E[-+]?{digit}+)?
+float  [+-]?{digit}*(\.{digit}+)?((E|e)[-+]?{digit}+)?
 integer {digit}+
 
 
