@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	yyin = fopen(argv[1], "r");
-	outlog.open("22201299.txt", ios::trunc);
+	outlog.open("22201299_log.txt", ios::trunc);
 	
 	if(yyin == NULL)
 	{
