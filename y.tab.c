@@ -2431,7 +2431,6 @@ yyreturn:
 
 
 void yyerror(const char *s) {
-   // fprintf(stderr, "Error: %s at line %d\n", s, lines);
     fprintf(stderr, "Unexpected token: %s\n", yytext);
 }
 
