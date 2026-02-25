@@ -20,6 +20,8 @@ void yyerror(const char *s);
 %}
 
 %token IF FOR DO INT FLOAT VOID SWITCH DEFAULT GOTO ELSE WHILE BREAK CHAR DOUBLE RETURN CASE CONTINUE PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA COLON SEMICOLON ID CONST_INT CONST_FLOAT
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 %%
 
@@ -251,19 +253,19 @@ statement : FOR LPAREN expression_statement expression_statement expression RPAR
 	  }
 
 
-	  | IF LPAREN expression RPAREN statement
+	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 	  {
 	    	outlog<<"At line no: "<<lines<<" statement : IF LPAREN expression RPAREN statement "<<endl<<endl;
 			outlog<<"if("<<$3->getname()<<")\n"<<$5->getname()<<endl<<endl;
 			
 			$$ = new symbol_info("if("+$3->getname()+")\n"+$5->getname(),"stmnt");
 	  }
-	  | IF LPAREN expression RPAREN statement ELSE statement
+	  | IF LPAREN expression RPAREN statement ELSE statement %prec ELSE
 	  {
 	    	outlog<<"At line no: "<<lines<<" statement : IF LPAREN expression RPAREN statement ELSE statement "<<endl<<endl;
-			outlog<<"if("<<$3->getname()<<")\n"<<$5->getname()<<"else\n"<<$7->getname()<<endl<<endl;
+			outlog<<"if("<<$3->getname()<<")\n"<<$5->getname()<<"\nelse\n"<<$7->getname()<<endl<<endl;
 			
-			$$ = new symbol_info("if("+$3->getname()+")\n"+$5->getname()+"else\n"+$7->getname(),"stmnt");
+			$$ = new symbol_info("if("+$3->getname()+")\n"+$5->getname()+"\nelse\n"+$7->getname(),"stmnt");
 	  }
 	  ;
 
@@ -488,7 +490,6 @@ arguments : arguments COMMA logic_expression
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error: %s at line %d\n", s, lines);
     fprintf(stderr, "Unexpected token: %s\n", yytext);
 }
 
@@ -510,6 +511,7 @@ int main(int argc, char *argv[])
     
 	yyparse();
 	
+	outlog<<endl<<"Total lines: "<<lines<<" "<<endl;
 	printf("Total lines: %d", lines);
 	
 	outlog.close();

@@ -83,7 +83,8 @@ extern int yydebug;
      SEMICOLON = 292,
      ID = 293,
      CONST_INT = 294,
-     CONST_FLOAT = 295
+     CONST_FLOAT = 295,
+     LOWER_THAN_ELSE = 296
    };
 #endif
 /* Tokens.  */
@@ -125,6 +126,7 @@ extern int yydebug;
 #define ID 293
 #define CONST_INT 294
 #define CONST_FLOAT 295
+#define LOWER_THAN_ELSE 296
 
 
 
