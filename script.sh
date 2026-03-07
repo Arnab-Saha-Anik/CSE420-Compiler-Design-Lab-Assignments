@@ -1,10 +1,10 @@
 #!/bin/bash
 
-yacc -d -y --debug --verbose syntax_analyzer.y
+yacc -d -y --debug --verbose 22201299_22201291.y
 echo 'Generated the parser C file as well the header file'
 g++ -w -c -o y.o y.tab.c
 echo 'Generated the parser object file'
-flex lex_analyzer.l
+flex 22201299_22201291.l
 echo 'Generated the scanner C file'
 g++ -fpermissive -w -c -o l.o lex.yy.c
 # if the above command doesn't work try g++ -fpermissive -w -c -o l.o lex.yy.c
@@ -13,4 +13,4 @@ g++ y.o l.o
 echo 'All ready, running'
 ./a.exe input.c
 echo 'logfile'
-cat log.txt
+cat 22201299_22201291.txt
