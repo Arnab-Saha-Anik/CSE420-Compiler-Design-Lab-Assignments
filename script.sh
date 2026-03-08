@@ -13,4 +13,4 @@ g++ y.o l.o
 echo 'All ready, running'
 ./a.exe input1.c
 echo 'logfile'
-cat 22201299_22201291.txt
+cat 22201299_22201291_log.txt
