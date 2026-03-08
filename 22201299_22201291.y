@@ -12,13 +12,17 @@ extern YYSTYPE yylval;
 // create your symbol table here.
 // You can store the pointer to your symbol table in a global variable
 // or you can create an object
-
+symbol_table *sym_table = new symbol_table(10);
 int lines = 1;
 
 ofstream outlog;
 
 // you may declare other necessary variables here to store necessary info
 // such as current variable type, variable list, function name, return type, function parameter types, parameters names etc.
+string current_type;
+vector<symbol_info*> current_parameters;
+string current_func_name;
+string current_return_type;
 
 void yyerror(char *s)
 {
@@ -42,6 +46,7 @@ start : program
 		outlog<<"Symbol Table"<<endl<<endl;
 		
 		// Print your whole symbol table here
+		sym_table->print_all_scopes(outlog);
 	}
 	;
 
@@ -87,6 +92,9 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 			// The function definition is complete.
             // You can now insert necessary information about the function into the symbol table
             // However, note that the scope of the function and the scope of the compound statement are different.
+			symbol_info *func = new symbol_info($2->getname(), $1->getname(), "function", $1->getname(), current_parameters, 0);
+            sym_table->insert(func);
+            current_parameters.clear();
 		}
 		| type_specifier ID LPAREN RPAREN compound_statement
 		{
@@ -99,6 +107,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 			// The function definition is complete.
             // You can now insert necessary information about the function into the symbol table
             // However, note that the scope of the function and the scope of the compound statement are different.
+			symbol_info *func = new symbol_info($2->getname(), $1->getname(), "function", $1->getname(), vector<symbol_info*>(), 0);
+            sym_table->insert(func);
 		}
  		;
 
@@ -111,6 +121,8 @@ parameter_list : parameter_list COMMA type_specifier ID
 			
             // store the necessary information about the function parameters
             // They will be needed when you want to enter the function into the symbol table
+            symbol_info *param = new symbol_info($4->getname(), $3->getname());
+            current_parameters.push_back(param);
 		}
 		| parameter_list COMMA type_specifier
 		{
@@ -131,6 +143,8 @@ parameter_list : parameter_list COMMA type_specifier ID
 			
             // store the necessary information about the function parameters
             // They will be needed when you want to enter the function into the symbol table
+            symbol_info *param = new symbol_info($2->getname(), $1->getname());
+            current_parameters.push_back(param);
 		}
 		| type_specifier
 		{
@@ -154,6 +168,8 @@ compound_statement : LCURL statements RCURL
                 // The compound statement is complete.
                 // Print the symbol table here and exit the scope
                 // Note that function parameters should be in the current scope
+                sym_table->print_current_scope(outlog);
+                sym_table->exit_scope();
  		    }
  		    | LCURL RCURL
  		    { 
@@ -164,6 +180,8 @@ compound_statement : LCURL statements RCURL
 				
 				// The compound statement is complete.
                 // Print the symbol table here and exit the scope
+                sym_table->print_current_scope(outlog);
+                sym_table->exit_scope();
  		    }
  		    ;
  		    
@@ -207,6 +225,8 @@ declaration_list : declaration_list COMMA ID
  		  	outlog<<$1->getname()+","<<$3->getname()<<endl<<endl;
 
             // you may need to store the variable names to insert them in symbol table here or later
+            symbol_info *var = new symbol_info($3->getname(), current_type);
+            sym_table->insert(var);
 			
  		  }
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD //array after some declaration
@@ -215,7 +235,8 @@ declaration_list : declaration_list COMMA ID
  		  	outlog<<$1->getname()+","<<$3->getname()<<"["<<$5->getname()<<"]"<<endl<<endl;
 
             // you may need to store the variable names to insert them in symbol table here or later
-			
+            symbol_info *arr = new symbol_info($3->getname(), current_type, "array", "", vector<symbol_info*>(), stoi($5->getname()));
+            sym_table->insert(arr);
  		  }
  		  |ID
  		  {
@@ -223,7 +244,8 @@ declaration_list : declaration_list COMMA ID
 			outlog<<$1->getname()<<endl<<endl;
 
             // you may need to store the variable names to insert them in symbol table here or later
-			
+            symbol_info *var = new symbol_info($1->getname(), current_type);
+            sym_table->insert(var);
  		  }
  		  | ID LTHIRD CONST_INT RTHIRD //array
  		  {
@@ -231,7 +253,8 @@ declaration_list : declaration_list COMMA ID
 			outlog<<$1->getname()<<"["<<$3->getname()<<"]"<<endl<<endl;
 
             // you may need to store the variable names to insert them in symbol table here or later
-            
+            symbol_info *arr = new symbol_info($1->getname(), current_type, "array", "", vector<symbol_info*>(), stoi($3->getname()));
+            sym_table->insert(arr);
  		  }
  		  ;
  		  
