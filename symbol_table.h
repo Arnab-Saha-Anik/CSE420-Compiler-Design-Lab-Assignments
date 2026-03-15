@@ -19,7 +19,6 @@ public:
     void print_current_scope_table(ofstream& outlog);
     void print_all_scopes(ofstream& outlog);
 
-    // you can add more methods if you need 
 };
 
 symbol_table::symbol_table(int bucket_count, ofstream& outlog) : outlog(outlog)
@@ -32,7 +31,6 @@ symbol_table::symbol_table(int bucket_count, ofstream& outlog) : outlog(outlog)
 
 symbol_table::~symbol_table()
 {
-    // Deallocate memory for all scope tables
     while (current_scope != NULL)
     {
         scope_table *temp = current_scope;

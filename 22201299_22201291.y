@@ -447,7 +447,7 @@ simple_expression : term
           }
           ;
                     
-term :	unary_expression //term can be void because of un_expr->factor
+term :	unary_expression
      {
         	outlog<<"At line no: "<<lines<<" term : unary_expression "<<endl<<endl;
             outlog<<$1->getname()<<endl<<endl;

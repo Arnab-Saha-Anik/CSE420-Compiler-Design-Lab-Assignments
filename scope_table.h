@@ -30,7 +30,6 @@ public:
     void print_scope_table(ofstream& outlog);
     ~scope_table();
 
-    // you can add more methods if you need
 };
 
 scope_table::scope_table()
@@ -102,9 +101,6 @@ bool scope_table::delete_from_scope(symbol_info* symbol)
 }
 
 
-
-// complete the methods of scope_table class
-
 void scope_table::print_scope_table(ofstream& outlog)
 {   
     outlog << "ScopeTable # " + to_string(unique_id) << endl;
@@ -125,8 +121,8 @@ void scope_table::print_scope_table(ofstream& outlog)
                     int size = sym->get_parameters().size();
                     for (int j = 0; j < size; j++)
                     {
-                        auto param = sym->get_parameters()[j];
-                        outlog << param.get_type() <<" "<<param.getname();
+                        auto *param = sym->get_parameters()[j];
+                        outlog << param->get_type() <<" "<<param->getname();
                         if (j < size - 1) outlog << ", ";
                     }
                     outlog << endl << endl;

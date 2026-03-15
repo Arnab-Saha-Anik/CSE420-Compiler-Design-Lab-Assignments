@@ -8,7 +8,7 @@ private:
     string type;
     string symbol_type = "";
     string return_type = "";
-    vector<symbol_info> parameters = {};
+    vector<symbol_info *> parameters = {};
     int array_size = 0;
 
 public:
@@ -34,7 +34,7 @@ public:
     {
         return return_type;
     }
-    vector<symbol_info> get_parameters()
+    vector<symbol_info *> get_parameters()
     {
         return parameters;
     }
@@ -60,10 +60,7 @@ public:
     }
     void set_parameters(vector<symbol_info*> parameters)
     {
-        this->parameters.clear();
-        for (auto p : parameters) {
-            this->parameters.push_back(*p);
-        }
+        this->parameters = parameters;
     }
     void set_array_size(int array_size)
     {
