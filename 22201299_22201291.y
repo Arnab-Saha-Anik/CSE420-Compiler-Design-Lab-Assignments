@@ -176,6 +176,7 @@ compound_statement : LCURL
                 outlog<<"{\n}"<<endl<<endl;
                 
                 $$ = new symbol_info("{\n}","comp_stmnt");
+                sym_table->print_all_scopes(outlog);
                 sym_table->exit_scope();
              }
              ;
