@@ -27,6 +27,7 @@ symbol_table::symbol_table(int bucket_count, ofstream& outlog) : outlog(outlog)
     this->bucket_count = bucket_count;
     this->current_scope_id = 1;
     current_scope = new scope_table(bucket_count, current_scope_id, NULL);
+    outlog << "New ScopeTable with ID " << current_scope->get_unique_id() << " created" << endl << endl;
 }
 
 symbol_table::~symbol_table()

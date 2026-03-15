@@ -17,17 +17,7 @@ public:
         this->name = name;
         this->type = type;
     }
-    symbol_info(string name, string type, string symbol_type, string return_type, vector<symbol_info*> params, int array_size)
-    {
-        this->name = name;
-        this->type = type;
-        this->symbol_type = symbol_type;
-        this->return_type = return_type;
-        this->array_size = array_size;
-        for (auto p : params) {
-            this->parameters.push_back(*p);
-        }
-    }
+
     string getname()
     {
         return name;

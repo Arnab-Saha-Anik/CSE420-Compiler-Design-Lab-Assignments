@@ -126,29 +126,26 @@ void scope_table::print_scope_table(ofstream& outlog)
                     for (int j = 0; j < size; j++)
                     {
                         auto param = sym->get_parameters()[j];
-                        outlog << param.get_type() << param.getname();
+                        outlog << param.get_type() <<" "<<param.getname();
                         if (j < size - 1) outlog << ", ";
                     }
-                    outlog << endl;
+                    outlog << endl << endl;
                 }
                 else if (sym->get_symbol_type() == "array")
                 {
                     outlog << "Array" << endl;
                     outlog << "Type: " << sym->get_type() << endl;
-                    outlog << "Size: " << sym->get_array_size() << endl;
+                    outlog << "Size: " << sym->get_array_size()<< endl<< endl;
                 }
                 else
                 {
                     outlog << "Variable" << endl;
-                    outlog << "Type: " << sym->get_type() << endl;
+                    outlog << "Type: " << sym->get_type()<< endl<< endl;
                 }
-                outlog << endl;
             }
         }
     }
 }
-        
-          
 
 scope_table::~scope_table()
 {

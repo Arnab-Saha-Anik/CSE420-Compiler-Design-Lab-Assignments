@@ -79,22 +79,19 @@ unit : var_declaration
      ;
 
 func_definition : type_specifier ID LPAREN parameter_list RPAREN
-        {		     
+        {	    
             $2->set_symbol_type("function");
             $2->set_return_type($1->getname());
             $2->set_parameters(current_parameters);
             sym_table->insert($2);
-            sym_table->enter_scope();
-            current_parameters.clear();
 
         }
         compound_statement
         {	
             outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement "<<endl<<endl;
-            outlog<<$1->getname()<<" "<<$2->getname()<<"("+$4->getname()+")\n"<<$6->getname()<<endl<<endl;
+            outlog<<$1->getname()<<" "<<$2->getname()<<"("+$4->getname()+")\n"<<$7->getname()<<endl<<endl;
             
-            $$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$6->getname(),"func_def");
-            sym_table->exit_scope();
+            $$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$7->getname(),"func_def");
 
         }
         | type_specifier ID LPAREN RPAREN
@@ -108,9 +105,9 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
         {
             
             outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN RPAREN compound_statement "<<endl<<endl;
-            outlog<<$1->getname()<<" "<<$2->getname()<<"()\n"<<$5->getname()<<endl<<endl;
+            outlog<<$1->getname()<<" "<<$2->getname()<<"()\n"<<$6->getname()<<endl<<endl;
             
-            $$ = new symbol_info($1->getname()+" "+$2->getname()+"()\n"+$5->getname(),"func_def");
+            $$ = new symbol_info($1->getname()+" "+$2->getname()+"()\n"+$6->getname(),"func_def");
 
         }
         ;
@@ -148,22 +145,37 @@ parameter_list : parameter_list COMMA type_specifier ID
         }
          ;
 
-compound_statement : LCURL { sym_table->enter_scope(); } statements RCURL
+compound_statement : LCURL 
+            { 
+                sym_table->enter_scope();
+                
+                if (!current_parameters.empty()) {
+                    for(auto param : current_parameters) { 
+                        if(!param->getname().empty()) {
+                            symbol_info* param_symbol = new symbol_info(param->getname(), "ID");
+                            param_symbol->set_symbol_type(param->get_type());
+                            sym_table->insert(param_symbol);
+                        }
+                    }
+                }
+                current_parameters.clear();
+            } 
+            statements RCURL
             { 
              	outlog<<"At line no: "<<lines<<" compound_statement : LCURL statements RCURL "<<endl<<endl;
-                outlog<<"{\n"+$2->getname()+"\n}"<<endl<<endl;
+                outlog<<"{\n"+$3->getname()+"\n}"<<endl<<endl;
                 
-                $$ = new symbol_info("{\n"+$2->getname()+"\n}","comp_stmnt");
-                
+                $$ = new symbol_info("{\n"+$3->getname()+"\n}","comp_stmnt");
                 sym_table->print_all_scopes(outlog);
                 sym_table->exit_scope();
              }
-             | LCURL RCURL
+             | LCURL { sym_table->enter_scope(); } RCURL
              { 
              	outlog<<"At line no: "<<lines<<" compound_statement : LCURL RCURL "<<endl<<endl;
                 outlog<<"{\n}"<<endl<<endl;
                 
                 $$ = new symbol_info("{\n}","comp_stmnt");
+                sym_table->exit_scope();
              }
              ;
              
@@ -577,7 +589,6 @@ int main(int argc, char *argv[])
         return 0;
     }
     sym_table = new symbol_table(10, outlog);
-
     yyparse();
     
     outlog<<endl<<"Total lines: "<<lines<<endl;
