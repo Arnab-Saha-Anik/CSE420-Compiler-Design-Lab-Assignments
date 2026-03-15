@@ -2,6 +2,8 @@ At line no: 1 type_specifier : INT
 
 int
 
+New ScopeTable with ID 2 created
+
 At line no: 3 type_specifier : INT 
 
 int
@@ -69,6 +71,8 @@ a>1
 At line no: 5 expression : logic_expression 
 
 a>1
+
+New ScopeTable with ID 3 created
 
 At line no: 6 type_specifier : FLOAT 
 
@@ -138,6 +142,8 @@ At line no: 8 expression : logic_expression
 
 a>1
 
+New ScopeTable with ID 4 created
+
 At line no: 9 type_specifier : INT 
 
 int
@@ -205,6 +211,8 @@ a>1
 At line no: 11 expression : logic_expression 
 
 a>1
+
+New ScopeTable with ID 5 created
 
 At line no: 12 type_specifier : FLOAT 
 
@@ -274,6 +282,8 @@ At line no: 14 expression : logic_expression
 
 a>1
 
+New ScopeTable with ID 6 created
+
 At line no: 15 type_specifier : INT 
 
 int
@@ -342,6 +352,8 @@ At line no: 17 expression : logic_expression
 
 a>1
 
+New ScopeTable with ID 7 created
+
 At line no: 18 type_specifier : FLOAT 
 
 float
@@ -364,175 +376,3 @@ float a;
 
 At line no: 19 compound_statement : LCURL statements RCURL 
 
-{
-a
-}
-
-ScopeTable # 0
-7--> <a,> 
-At line no: 19 statement : compound_statement 
-
-{
-a
-}
-
-At line no: 20 statement : IF LPAREN expression RPAREN statement 
-
-if(a>1)
-{
-a
-}
-
-At line no: 20 statements : statements statement 
-
-int a;
-if(a>1)
-{
-a
-}
-
-At line no: 20 compound_statement : LCURL statements RCURL 
-
-{
-a
-}
-
-At line no: 20 statement : compound_statement 
-
-{
-a
-}
-
-At line no: 21 statement : IF LPAREN expression RPAREN statement 
-
-if(a>1)
-{
-a
-}
-
-At line no: 21 statements : statements statement 
-
-float a;
-if(a>1)
-{
-a
-}
-
-At line no: 21 compound_statement : LCURL statements RCURL 
-
-{
-a
-}
-
-At line no: 21 statement : compound_statement 
-
-{
-a
-}
-
-At line no: 22 statement : IF LPAREN expression RPAREN statement 
-
-if(a>1)
-{
-a
-}
-
-At line no: 22 statements : statements statement 
-
-int a;
-if(a>1)
-{
-a
-}
-
-At line no: 22 compound_statement : LCURL statements RCURL 
-
-{
-a
-}
-
-At line no: 22 statement : compound_statement 
-
-{
-a
-}
-
-At line no: 23 statement : IF LPAREN expression RPAREN statement 
-
-if(a>1)
-{
-a
-}
-
-At line no: 23 statements : statements statement 
-
-float a;
-if(a>1)
-{
-a
-}
-
-At line no: 23 compound_statement : LCURL statements RCURL 
-
-{
-a
-}
-
-At line no: 23 statement : compound_statement 
-
-{
-a
-}
-
-At line no: 24 statement : IF LPAREN expression RPAREN statement 
-
-if(a>1)
-{
-a
-}
-
-At line no: 24 statements : statements statement 
-
-int a;
-if(a>1)
-{
-a
-}
-
-At line no: 24 compound_statement : LCURL statements RCURL 
-
-{
-a
-}
-
-At line no: 24 func_definition : type_specifier ID LPAREN RPAREN compound_statement 
-
-int func()
-{
-a
-}
-
-At line no: 24 unit : func_definition 
-
-int func()
-{
-a
-}
-
-At line no: 24 program : unit 
-
-int func()
-{
-a
-}
-
-At line no: 24 start : program 
-
-Symbol Table
-
-################################
-
-################################
-
-
-Total lines: 24
