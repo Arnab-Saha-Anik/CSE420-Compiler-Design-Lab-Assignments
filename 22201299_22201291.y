@@ -5,6 +5,7 @@
 #define YYSTYPE symbol_info*
 
 extern FILE *yyin;
+extern char *yytext;
 int yyparse(void);
 int yylex(void);
 extern YYSTYPE yylval;
@@ -27,7 +28,7 @@ void yyerror(char *s)
 {
     outlog<<"At line "<<lines<<" "<<s<<endl<<endl;
 
-    // you may need to reinitialize variables if you find an error
+    fprintf(stderr, "Unexpected token: %s\n", yytext);
 }
 
 %}
@@ -465,7 +466,7 @@ term :	unary_expression
      }
      ;
 
-unary_expression : ADDOP unary_expression  //
+unary_expression : ADDOP unary_expression
          {
         	outlog<<"At line no: "<<lines<<" unary_expression : ADDOP unary_expression "<<endl<<endl;
             outlog<<$1->getname()<<$2->getname()<<endl<<endl;
