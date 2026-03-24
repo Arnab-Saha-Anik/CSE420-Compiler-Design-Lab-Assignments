@@ -16,8 +16,10 @@ extern YYSTYPE yylval;
 symbol_table *sym_table = nullptr;
 
 int lines = 1;
+int errcount = 0;
 
 ofstream outlog;
+ofstream errlog;
 
 // you may declare other necessary variables here to store necessary info
 // such as current variable type, variable list, function name, return type, function parameter types, parameters names etc.
@@ -395,7 +397,6 @@ expression : logic_expression
        {
         	outlog<<"At line no: "<<lines<<" expression : variable ASSIGNOP logic_expression "<<endl<<endl;
             outlog<<$1->getname()<<"="<<$3->getname()<<endl<<endl;
-
             $$ = new symbol_info($1->getname()+"="+$3->getname(),"expr");
        }
        ;
@@ -585,6 +586,7 @@ int main(int argc, char *argv[])
     }
     yyin = fopen(argv[1], "r");
     outlog.open("22201299_22201291_log.txt", ios::trunc);
+    errlog.open("22201299_22201291_error.txt", ios::trunc);
     if(yyin == NULL)
     {
         cout<<"Couldn't open file"<<endl;
@@ -594,8 +596,11 @@ int main(int argc, char *argv[])
     yyparse();
     
     outlog<<endl<<"Total lines: "<<lines<<endl;
+    outlog<<endl<<"Total errors: "<<errcount<<endl;
+    errlog<<endl<<"Total errors: "<<errcount<<endl; 
     
     outlog.close();
+    errlog.close();
     
     fclose(yyin);
     

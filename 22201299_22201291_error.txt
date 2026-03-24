@@ -1,0 +1,7 @@
+At line no: 7 variable is of lgc_expr
+At line no: 8 variable is of lgc_expr
+At line no: 9 variable is of lgc_expr
+At line no: 10 variable is of lgc_expr
+At line no: 12 variable is of lgc_expr
+
+Total errors: 0
