@@ -1,7 +1,4 @@
-At line no: 7 variable is of lgc_expr
-At line no: 8 variable is of lgc_expr
-At line no: 9 variable is of lgc_expr
-At line no: 10 variable is of lgc_expr
-At line no: 12 variable is of lgc_expr
+At line no: 7 array index is not of integer type : a
 
-Total errors: 0
+
+Total errors: 1

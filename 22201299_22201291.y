@@ -33,6 +33,13 @@ void yyerror(char *s)
     fprintf(stderr, "Unexpected token: %s\n", yytext);
 }
 
+symbol_info* get_variable_info(string name) {
+    symbol_info* temp = new symbol_info(name, "ID");
+    symbol_info* found = sym_table->lookup(temp);  // Search in symbol table
+    delete temp;
+    return found;  // Returns the entry with "array", "int", "float" info
+}
+
 %}
 
 %token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN SWITCH CASE DEFAULT CONTINUE PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON CONST_INT CONST_FLOAT ID
@@ -227,6 +234,8 @@ declaration_list : declaration_list COMMA ID
             // you may need to store the variable names to insert them in symbol table here or later
             $3->set_type(current_type);
             sym_table->insert($3);
+            $$ = new symbol_info($1->getname()+", "+$3->getname(),"declaration_list");
+
            }
            | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
            {
@@ -239,6 +248,7 @@ declaration_list : declaration_list COMMA ID
             $3->set_array_size(stoi($5->getname()));
 
             sym_table->insert($3);
+            $$ = new symbol_info($1->getname()+", "+$3->getname()+"["+$5->getname()+"]","declaration_list");
            }
            |ID
            {
@@ -248,7 +258,7 @@ declaration_list : declaration_list COMMA ID
             // you may need to store the variable names to insert them in symbol table here or later
             $1->set_type(current_type);
             sym_table->insert($1);
-
+            $$ = new symbol_info($1->getname(),"declaration_list");	
            }
            | ID LTHIRD CONST_INT RTHIRD
            {
@@ -260,6 +270,7 @@ declaration_list : declaration_list COMMA ID
             $1->set_symbol_type("array");
             $1->set_array_size(stoi($3->getname()));
             sym_table->insert($1);
+            $$ = new symbol_info($1->getname()+"["+$3->getname()+"]","declaration_list");
            }
            ;
            
@@ -382,6 +393,15 @@ variable : ID
      	outlog<<"At line no: "<<lines<<" variable : ID LTHIRD expression RTHIRD "<<endl<<endl;
         outlog<<$1->getname()<<"["<<$3->getname()<<"]"<<endl<<endl;
         
+        symbol_info* var_info = get_variable_info($1->getname());
+        if (var_info && var_info->get_symbol_type() == "array") {
+
+            if ($3->get_var_type() != "int") {
+                outlog<<"At line no: "<<lines<<" array index is not of integer type : "<<$1->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" array index is not of integer type : "<<$1->getname()<<endl<<endl;
+                errcount++;
+            }
+        }
         $$ = new symbol_info($1->getname()+"["+$3->getname()+"]","varbl");
      }
      ;
@@ -392,12 +412,14 @@ expression : logic_expression
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"expr");
+            $$->set_var_type($1->get_var_type());
        }
        | variable ASSIGNOP logic_expression 	
        {
         	outlog<<"At line no: "<<lines<<" expression : variable ASSIGNOP logic_expression "<<endl<<endl;
             outlog<<$1->getname()<<"="<<$3->getname()<<endl<<endl;
             $$ = new symbol_info($1->getname()+"="+$3->getname(),"expr");
+            $$->set_var_type($3->get_var_type());
        }
        ;
             
@@ -407,6 +429,7 @@ logic_expression : rel_expression
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"lgc_expr");
+            $$->set_var_type($1->get_var_type());
          }	
          | rel_expression LOGICOP rel_expression 
          {
@@ -414,6 +437,7 @@ logic_expression : rel_expression
             outlog<<$1->getname()<<$2->getname()<<$3->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"lgc_expr");
+            $$->set_var_type("int");
          }	
          ;
             
@@ -423,6 +447,7 @@ rel_expression	: simple_expression
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"rel_expr");
+            $$->set_var_type($1->get_var_type());
         }
         | simple_expression RELOP simple_expression
         {
@@ -430,6 +455,7 @@ rel_expression	: simple_expression
             outlog<<$1->getname()<<$2->getname()<<$3->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"rel_expr");
+            $$->set_var_type("int");
         }
         ;
                 
@@ -439,6 +465,7 @@ simple_expression : term
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"simp_expr");
+            $$->set_var_type($1->get_var_type());
             
           }
           | simple_expression ADDOP term 
@@ -447,6 +474,7 @@ simple_expression : term
             outlog<<$1->getname()<<$2->getname()<<$3->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"simp_expr");
+            $$->set_var_type($1->get_var_type());
           }
           ;
                     
@@ -456,6 +484,7 @@ term :	unary_expression
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"term");
+            $$->set_var_type($1->get_var_type());
             
      }
      |  term MULOP unary_expression
@@ -464,6 +493,7 @@ term :	unary_expression
             outlog<<$1->getname()<<$2->getname()<<$3->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"term");
+            $$->set_var_type($1->get_var_type());
             
      }
      ;
@@ -474,6 +504,7 @@ unary_expression : ADDOP unary_expression
             outlog<<$1->getname()<<$2->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname(),"un_expr");
+            $$->set_var_type($2->get_var_type());
          }
          | NOT unary_expression 
          {
@@ -481,6 +512,7 @@ unary_expression : ADDOP unary_expression
             outlog<<"!"<<$2->getname()<<endl<<endl;
             
             $$ = new symbol_info("!"+$2->getname(),"un_expr");
+            $$->set_var_type("int");
          }
          | factor 
          {
@@ -488,6 +520,7 @@ unary_expression : ADDOP unary_expression
             outlog<<$1->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname(),"un_expr");
+            $$->set_var_type($1->get_var_type());
          }
          ;
     
@@ -497,6 +530,7 @@ factor	: variable
         outlog<<$1->getname()<<endl<<endl;
             
         $$ = new symbol_info($1->getname(),"fctr");
+        $$->set_var_type($1->get_var_type()); 
     }
     | ID LPAREN argument_list RPAREN
     {
@@ -504,6 +538,7 @@ factor	: variable
         outlog<<$1->getname()<<"("<<$3->getname()<<")"<<endl<<endl;
 
         $$ = new symbol_info($1->getname()+"("+$3->getname()+")","fctr");
+        $$->set_var_type($1->get_var_type());
     }
     | LPAREN expression RPAREN
     {
@@ -511,6 +546,7 @@ factor	: variable
         outlog<<"("<<$2->getname()<<")"<<endl<<endl;
         
         $$ = new symbol_info("("+$2->getname()+")","fctr");
+        $$->set_var_type($2->get_var_type());
     }
     | CONST_INT 
     {
@@ -518,6 +554,8 @@ factor	: variable
         outlog<<$1->getname()<<endl<<endl;
             
         $$ = new symbol_info($1->getname(),"fctr");
+        $$->set_var_type("int");
+
     }
     | CONST_FLOAT
     {
@@ -525,6 +563,7 @@ factor	: variable
         outlog<<$1->getname()<<endl<<endl;
             
         $$ = new symbol_info($1->getname(),"fctr");
+        $$->set_var_type("float");
     }
     | variable INCOP 
     {
@@ -532,6 +571,7 @@ factor	: variable
         outlog<<$1->getname()<<"++"<<endl<<endl;
             
         $$ = new symbol_info($1->getname()+"++","fctr");
+        $$->set_var_type($1->get_var_type());
     }
     | variable DECOP
     {
@@ -539,6 +579,7 @@ factor	: variable
         outlog<<$1->getname()<<"--"<<endl<<endl;
             
         $$ = new symbol_info($1->getname()+"--","fctr");
+        $$->set_var_type($1->get_var_type());
     }
     ;
     

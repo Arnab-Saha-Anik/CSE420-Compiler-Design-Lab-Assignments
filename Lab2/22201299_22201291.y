@@ -225,6 +225,7 @@ declaration_list : declaration_list COMMA ID
             // you may need to store the variable names to insert them in symbol table here or later
             $3->set_type(current_type);
             sym_table->insert($3);
+            $$ = new symbol_info($1->getname()+", "+$3->getname(),"declaration_list");
            }
            | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
            {
@@ -237,6 +238,7 @@ declaration_list : declaration_list COMMA ID
             $3->set_array_size(stoi($5->getname()));
 
             sym_table->insert($3);
+            $$ = new symbol_info($1->getname()+", "+$3->getname()+"["+$5->getname()+"]","declaration_list");
            }
            |ID
            {
@@ -246,7 +248,7 @@ declaration_list : declaration_list COMMA ID
             // you may need to store the variable names to insert them in symbol table here or later
             $1->set_type(current_type);
             sym_table->insert($1);
-
+            $$ = new symbol_info($1->getname(),"declaration_list");
            }
            | ID LTHIRD CONST_INT RTHIRD
            {
@@ -258,6 +260,7 @@ declaration_list : declaration_list COMMA ID
             $1->set_symbol_type("array");
             $1->set_array_size(stoi($3->getname()));
             sym_table->insert($1);
+            $$ = new symbol_info($1->getname()+"["+$3->getname()+"]","declaration_list");
            }
            ;
            

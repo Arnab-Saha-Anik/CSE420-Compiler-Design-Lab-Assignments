@@ -99,9 +99,16 @@ void yyerror(char *s)
     fprintf(stderr, "Unexpected token: %s\n", yytext);
 }
 
+symbol_info* get_variable_info(string name) {
+    symbol_info* temp = new symbol_info(name, "ID");
+    symbol_info* found = sym_table->lookup(temp);  // Search in symbol table
+    delete temp;
+    return found;  // Returns the entry with "array", "int", "float" info
+}
+
 
 /* Line 371 of yacc.c  */
-#line 105 "y.tab.c"
+#line 112 "y.tab.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -245,7 +252,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 249 "y.tab.c"
+#line 256 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -562,13 +569,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    45,    45,    53,    60,    68,    75,    85,    84,   101,
-     100,   118,   127,   133,   142,   152,   151,   175,   175,   186,
-     196,   204,   212,   222,   231,   243,   253,   267,   274,   283,
-     290,   298,   305,   312,   319,   326,   333,   340,   347,   356,
-     363,   372,   380,   389,   396,   410,   417,   426,   433,   442,
-     450,   459,   467,   477,   484,   491,   500,   507,   514,   521,
-     528,   535,   542,   551,   559,   567,   574
+       0,    52,    52,    60,    67,    75,    82,    92,    91,   108,
+     107,   125,   134,   140,   149,   159,   158,   182,   182,   193,
+     203,   211,   219,   229,   240,   253,   263,   278,   285,   294,
+     301,   309,   316,   323,   330,   337,   344,   351,   358,   367,
+     374,   383,   391,   409,   417,   426,   434,   444,   452,   462,
+     471,   481,   490,   501,   509,   517,   527,   535,   543,   551,
+     560,   568,   576,   586,   594,   602,   609
 };
 #endif
 
@@ -1547,7 +1554,7 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 46 "22201299_22201291.y"
+#line 53 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" start : program "<<endl<<endl;
         outlog<<"Symbol Table"<<endl<<endl;
@@ -1557,7 +1564,7 @@ yyreduce:
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 54 "22201299_22201291.y"
+#line 61 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" program : program unit "<<endl<<endl;
         outlog<<(yyvsp[(1) - (2)])->getname()+"\n"+(yyvsp[(2) - (2)])->getname()<<endl<<endl;
@@ -1568,7 +1575,7 @@ yyreduce:
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 61 "22201299_22201291.y"
+#line 68 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" program : unit "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1578,7 +1585,7 @@ yyreduce:
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 69 "22201299_22201291.y"
+#line 76 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" unit : var_declaration "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1589,7 +1596,7 @@ yyreduce:
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 76 "22201299_22201291.y"
+#line 83 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" unit : func_definition "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1600,7 +1607,7 @@ yyreduce:
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 85 "22201299_22201291.y"
+#line 92 "22201299_22201291.y"
     {	    
             (yyvsp[(2) - (5)])->set_symbol_type("function");
             (yyvsp[(2) - (5)])->set_return_type((yyvsp[(1) - (5)])->getname());
@@ -1612,7 +1619,7 @@ yyreduce:
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 93 "22201299_22201291.y"
+#line 100 "22201299_22201291.y"
     {	
             outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement "<<endl<<endl;
             outlog<<(yyvsp[(1) - (7)])->getname()<<" "<<(yyvsp[(2) - (7)])->getname()<<"("+(yyvsp[(4) - (7)])->getname()+")\n"<<(yyvsp[(7) - (7)])->getname()<<endl<<endl;
@@ -1624,7 +1631,7 @@ yyreduce:
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 101 "22201299_22201291.y"
+#line 108 "22201299_22201291.y"
     {            
             (yyvsp[(2) - (4)])->set_symbol_type("function");
             (yyvsp[(2) - (4)])->set_return_type((yyvsp[(1) - (4)])->getname());
@@ -1635,7 +1642,7 @@ yyreduce:
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 108 "22201299_22201291.y"
+#line 115 "22201299_22201291.y"
     {
             
             outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN RPAREN compound_statement "<<endl<<endl;
@@ -1648,7 +1655,7 @@ yyreduce:
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 119 "22201299_22201291.y"
+#line 126 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" parameter_list : parameter_list COMMA type_specifier ID "<<endl<<endl;
             outlog<<(yyvsp[(1) - (4)])->getname()<<","<<(yyvsp[(3) - (4)])->getname()<<" "<<(yyvsp[(4) - (4)])->getname()<<endl<<endl;
@@ -1661,7 +1668,7 @@ yyreduce:
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 128 "22201299_22201291.y"
+#line 135 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" parameter_list : parameter_list COMMA type_specifier "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<","<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
@@ -1671,7 +1678,7 @@ yyreduce:
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 134 "22201299_22201291.y"
+#line 141 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" parameter_list : type_specifier ID "<<endl<<endl;
             outlog<<(yyvsp[(1) - (2)])->getname()<<" "<<(yyvsp[(2) - (2)])->getname()<<endl<<endl;
@@ -1684,7 +1691,7 @@ yyreduce:
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 143 "22201299_22201291.y"
+#line 150 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" parameter_list : type_specifier "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1695,7 +1702,7 @@ yyreduce:
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 152 "22201299_22201291.y"
+#line 159 "22201299_22201291.y"
     { 
                 sym_table->enter_scope();
                 
@@ -1714,7 +1721,7 @@ yyreduce:
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 167 "22201299_22201291.y"
+#line 174 "22201299_22201291.y"
     { 
              	outlog<<"At line no: "<<lines<<" compound_statement : LCURL statements RCURL "<<endl<<endl;
                 outlog<<"{\n"+(yyvsp[(3) - (4)])->getname()+"\n}"<<endl<<endl;
@@ -1727,13 +1734,13 @@ yyreduce:
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 175 "22201299_22201291.y"
+#line 182 "22201299_22201291.y"
     { sym_table->enter_scope(); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 176 "22201299_22201291.y"
+#line 183 "22201299_22201291.y"
     { 
              	outlog<<"At line no: "<<lines<<" compound_statement : LCURL RCURL "<<endl<<endl;
                 outlog<<"{\n}"<<endl<<endl;
@@ -1746,7 +1753,7 @@ yyreduce:
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 187 "22201299_22201291.y"
+#line 194 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" var_declaration : type_specifier declaration_list SEMICOLON "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<" "<<(yyvsp[(2) - (3)])->getname()<<";"<<endl<<endl;
@@ -1758,7 +1765,7 @@ yyreduce:
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 197 "22201299_22201291.y"
+#line 204 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" type_specifier : INT "<<endl<<endl;
             outlog<<"int"<<endl<<endl;
@@ -1770,7 +1777,7 @@ yyreduce:
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 205 "22201299_22201291.y"
+#line 212 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" type_specifier : FLOAT "<<endl<<endl;
             outlog<<"float"<<endl<<endl;
@@ -1782,7 +1789,7 @@ yyreduce:
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 213 "22201299_22201291.y"
+#line 220 "22201299_22201291.y"
     {
             outlog<<"At line no: "<<lines<<" type_specifier : VOID "<<endl<<endl;
             outlog<<"void"<<endl<<endl;
@@ -1794,7 +1801,7 @@ yyreduce:
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 223 "22201299_22201291.y"
+#line 230 "22201299_22201291.y"
     {
            	outlog<<"At line no: "<<lines<<" declaration_list : declaration_list COMMA ID "<<endl<<endl;
            	outlog<<(yyvsp[(1) - (3)])->getname()+","<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
@@ -1802,12 +1809,14 @@ yyreduce:
             // you may need to store the variable names to insert them in symbol table here or later
             (yyvsp[(3) - (3)])->set_type(current_type);
             sym_table->insert((yyvsp[(3) - (3)]));
+            (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+", "+(yyvsp[(3) - (3)])->getname(),"declaration_list");
+
            }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 232 "22201299_22201291.y"
+#line 241 "22201299_22201291.y"
     {
            	outlog<<"At line no: "<<lines<<" declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD "<<endl<<endl;
            	outlog<<(yyvsp[(1) - (6)])->getname()+","<<(yyvsp[(3) - (6)])->getname()<<"["<<(yyvsp[(5) - (6)])->getname()<<"]"<<endl<<endl;
@@ -1818,12 +1827,13 @@ yyreduce:
             (yyvsp[(3) - (6)])->set_array_size(stoi((yyvsp[(5) - (6)])->getname()));
 
             sym_table->insert((yyvsp[(3) - (6)]));
+            (yyval) = new symbol_info((yyvsp[(1) - (6)])->getname()+", "+(yyvsp[(3) - (6)])->getname()+"["+(yyvsp[(5) - (6)])->getname()+"]","declaration_list");
            }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 244 "22201299_22201291.y"
+#line 254 "22201299_22201291.y"
     {
            	outlog<<"At line no: "<<lines<<" declaration_list : ID "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1831,13 +1841,13 @@ yyreduce:
             // you may need to store the variable names to insert them in symbol table here or later
             (yyvsp[(1) - (1)])->set_type(current_type);
             sym_table->insert((yyvsp[(1) - (1)]));
-
+            (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"declaration_list");	
            }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 254 "22201299_22201291.y"
+#line 264 "22201299_22201291.y"
     {
            	outlog<<"At line no: "<<lines<<" declaration_list : ID LTHIRD CONST_INT RTHIRD "<<endl<<endl;
             outlog<<(yyvsp[(1) - (4)])->getname()<<"["<<(yyvsp[(3) - (4)])->getname()<<"]"<<endl<<endl;
@@ -1847,12 +1857,13 @@ yyreduce:
             (yyvsp[(1) - (4)])->set_symbol_type("array");
             (yyvsp[(1) - (4)])->set_array_size(stoi((yyvsp[(3) - (4)])->getname()));
             sym_table->insert((yyvsp[(1) - (4)]));
+            (yyval) = new symbol_info((yyvsp[(1) - (4)])->getname()+"["+(yyvsp[(3) - (4)])->getname()+"]","declaration_list");
            }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 268 "22201299_22201291.y"
+#line 279 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statements : statement "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1863,7 +1874,7 @@ yyreduce:
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 275 "22201299_22201291.y"
+#line 286 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statements : statements statement "<<endl<<endl;
             outlog<<(yyvsp[(1) - (2)])->getname()<<"\n"<<(yyvsp[(2) - (2)])->getname()<<endl<<endl;
@@ -1874,7 +1885,7 @@ yyreduce:
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 284 "22201299_22201291.y"
+#line 295 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : var_declaration "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1885,7 +1896,7 @@ yyreduce:
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 291 "22201299_22201291.y"
+#line 302 "22201299_22201291.y"
     {
       		outlog<<"At line no: "<<lines<<" statement : func_definition "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1897,7 +1908,7 @@ yyreduce:
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 299 "22201299_22201291.y"
+#line 310 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : expression_statement "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1908,7 +1919,7 @@ yyreduce:
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 306 "22201299_22201291.y"
+#line 317 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : compound_statement "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -1919,7 +1930,7 @@ yyreduce:
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 313 "22201299_22201291.y"
+#line 324 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement "<<endl<<endl;
             outlog<<"for("<<(yyvsp[(3) - (7)])->getname()<<(yyvsp[(4) - (7)])->getname()<<(yyvsp[(5) - (7)])->getname()<<")\n"<<(yyvsp[(7) - (7)])->getname()<<endl<<endl;
@@ -1930,7 +1941,7 @@ yyreduce:
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 320 "22201299_22201291.y"
+#line 331 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : IF LPAREN expression RPAREN statement "<<endl<<endl;
             outlog<<"if("<<(yyvsp[(3) - (5)])->getname()<<")\n"<<(yyvsp[(5) - (5)])->getname()<<endl<<endl;
@@ -1941,7 +1952,7 @@ yyreduce:
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 327 "22201299_22201291.y"
+#line 338 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : IF LPAREN expression RPAREN statement ELSE statement "<<endl<<endl;
             outlog<<"if("<<(yyvsp[(3) - (7)])->getname()<<")\n"<<(yyvsp[(5) - (7)])->getname()<<"\nelse\n"<<(yyvsp[(7) - (7)])->getname()<<endl<<endl;
@@ -1952,7 +1963,7 @@ yyreduce:
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 334 "22201299_22201291.y"
+#line 345 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : WHILE LPAREN expression RPAREN statement "<<endl<<endl;
             outlog<<"while("<<(yyvsp[(3) - (5)])->getname()<<")\n"<<(yyvsp[(5) - (5)])->getname()<<endl<<endl;
@@ -1963,7 +1974,7 @@ yyreduce:
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 341 "22201299_22201291.y"
+#line 352 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : PRINTLN LPAREN ID RPAREN SEMICOLON "<<endl<<endl;
             outlog<<"printf("<<(yyvsp[(3) - (5)])->getname()<<");"<<endl<<endl; 
@@ -1974,7 +1985,7 @@ yyreduce:
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 348 "22201299_22201291.y"
+#line 359 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" statement : RETURN expression SEMICOLON "<<endl<<endl;
             outlog<<"return "<<(yyvsp[(2) - (3)])->getname()<<";"<<endl<<endl;
@@ -1985,7 +1996,7 @@ yyreduce:
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 357 "22201299_22201291.y"
+#line 368 "22201299_22201291.y"
     {
                 outlog<<"At line no: "<<lines<<" expression_statement : SEMICOLON "<<endl<<endl;
                 outlog<<";"<<endl<<endl;
@@ -1996,7 +2007,7 @@ yyreduce:
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 364 "22201299_22201291.y"
+#line 375 "22201299_22201291.y"
     {
                 outlog<<"At line no: "<<lines<<" expression_statement : expression SEMICOLON "<<endl<<endl;
                 outlog<<(yyvsp[(1) - (2)])->getname()<<";"<<endl<<endl;
@@ -2007,7 +2018,7 @@ yyreduce:
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 373 "22201299_22201291.y"
+#line 384 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" variable : ID "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -2019,246 +2030,270 @@ yyreduce:
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 381 "22201299_22201291.y"
+#line 392 "22201299_22201291.y"
     {
      	outlog<<"At line no: "<<lines<<" variable : ID LTHIRD expression RTHIRD "<<endl<<endl;
         outlog<<(yyvsp[(1) - (4)])->getname()<<"["<<(yyvsp[(3) - (4)])->getname()<<"]"<<endl<<endl;
         
+        symbol_info* var_info = get_variable_info((yyvsp[(1) - (4)])->getname());
+        if (var_info && var_info->get_symbol_type() == "array") {
+
+            if ((yyvsp[(3) - (4)])->get_var_type() != "int") {
+                outlog<<"At line no: "<<lines<<" array index is not of integer type : "<<(yyvsp[(1) - (4)])->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" array index is not of integer type : "<<(yyvsp[(1) - (4)])->getname()<<endl<<endl;
+                errcount++;
+            }
+        }
         (yyval) = new symbol_info((yyvsp[(1) - (4)])->getname()+"["+(yyvsp[(3) - (4)])->getname()+"]","varbl");
      }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 390 "22201299_22201291.y"
+#line 410 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" expression : logic_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"expr");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
        }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 397 "22201299_22201291.y"
+#line 418 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" expression : variable ASSIGNOP logic_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<"="<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
-            errlog<<"At line no: "<<lines<<" variable is of "<<(yyvsp[(3) - (3)])->get_type()<<endl;
-            if ((yyvsp[(1) - (3)])->get_symbol_type() != (yyvsp[(3) - (3)])->get_symbol_type()) {
-                errcount++;
-                errlog<<"At line no: "<<lines<<" variable is of "<<(yyvsp[(3) - (3)])->get_symbol_type()<<" type : "<<(yyvsp[(1) - (3)])->getname()<<endl<<endl;
-            }
-
             (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+"="+(yyvsp[(3) - (3)])->getname(),"expr");
+            (yyval)->set_var_type((yyvsp[(3) - (3)])->get_var_type());
        }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 411 "22201299_22201291.y"
+#line 427 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" logic_expression : rel_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"lgc_expr");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
          }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 418 "22201299_22201291.y"
+#line 435 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" logic_expression : rel_expression LOGICOP rel_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<(yyvsp[(2) - (3)])->getname()<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+(yyvsp[(2) - (3)])->getname()+(yyvsp[(3) - (3)])->getname(),"lgc_expr");
+            (yyval)->set_var_type("int");
          }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 427 "22201299_22201291.y"
+#line 445 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" rel_expression : simple_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"rel_expr");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
         }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 434 "22201299_22201291.y"
+#line 453 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" rel_expression : simple_expression RELOP simple_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<(yyvsp[(2) - (3)])->getname()<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+(yyvsp[(2) - (3)])->getname()+(yyvsp[(3) - (3)])->getname(),"rel_expr");
+            (yyval)->set_var_type("int");
         }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 443 "22201299_22201291.y"
+#line 463 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" simple_expression : term "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"simp_expr");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
             
           }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 451 "22201299_22201291.y"
+#line 472 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" simple_expression : simple_expression ADDOP term "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<(yyvsp[(2) - (3)])->getname()<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+(yyvsp[(2) - (3)])->getname()+(yyvsp[(3) - (3)])->getname(),"simp_expr");
+            (yyval)->set_var_type((yyvsp[(1) - (3)])->get_var_type());
           }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 460 "22201299_22201291.y"
+#line 482 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" term : unary_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"term");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
             
      }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 468 "22201299_22201291.y"
+#line 491 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" term : term MULOP unary_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (3)])->getname()<<(yyvsp[(2) - (3)])->getname()<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (3)])->getname()+(yyvsp[(2) - (3)])->getname()+(yyvsp[(3) - (3)])->getname(),"term");
+            (yyval)->set_var_type((yyvsp[(1) - (3)])->get_var_type());
             
      }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 478 "22201299_22201291.y"
+#line 502 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" unary_expression : ADDOP unary_expression "<<endl<<endl;
             outlog<<(yyvsp[(1) - (2)])->getname()<<(yyvsp[(2) - (2)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (2)])->getname()+(yyvsp[(2) - (2)])->getname(),"un_expr");
+            (yyval)->set_var_type((yyvsp[(2) - (2)])->get_var_type());
          }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 485 "22201299_22201291.y"
+#line 510 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" unary_expression : NOT unary_expression "<<endl<<endl;
             outlog<<"!"<<(yyvsp[(2) - (2)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info("!"+(yyvsp[(2) - (2)])->getname(),"un_expr");
+            (yyval)->set_var_type("int");
          }
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 492 "22201299_22201291.y"
+#line 518 "22201299_22201291.y"
     {
         	outlog<<"At line no: "<<lines<<" unary_expression : factor "<<endl<<endl;
             outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
             (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"un_expr");
+            (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type());
          }
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 501 "22201299_22201291.y"
+#line 528 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : variable "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
         (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"fctr");
+        (yyval)->set_var_type((yyvsp[(1) - (1)])->get_var_type()); 
     }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 508 "22201299_22201291.y"
+#line 536 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : ID LPAREN argument_list RPAREN "<<endl<<endl;
         outlog<<(yyvsp[(1) - (4)])->getname()<<"("<<(yyvsp[(3) - (4)])->getname()<<")"<<endl<<endl;
 
         (yyval) = new symbol_info((yyvsp[(1) - (4)])->getname()+"("+(yyvsp[(3) - (4)])->getname()+")","fctr");
+        (yyval)->set_var_type((yyvsp[(1) - (4)])->get_var_type());
     }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 515 "22201299_22201291.y"
+#line 544 "22201299_22201291.y"
     {
        	outlog<<"At line no: "<<lines<<" factor : LPAREN expression RPAREN "<<endl<<endl;
         outlog<<"("<<(yyvsp[(2) - (3)])->getname()<<")"<<endl<<endl;
         
         (yyval) = new symbol_info("("+(yyvsp[(2) - (3)])->getname()+")","fctr");
+        (yyval)->set_var_type((yyvsp[(2) - (3)])->get_var_type());
     }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 522 "22201299_22201291.y"
+#line 552 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : CONST_INT "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
         (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"fctr");
+        (yyval)->set_var_type("int");
+
     }
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 529 "22201299_22201291.y"
+#line 561 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : CONST_FLOAT "<<endl<<endl;
         outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
             
         (yyval) = new symbol_info((yyvsp[(1) - (1)])->getname(),"fctr");
+        (yyval)->set_var_type("float");
     }
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 536 "22201299_22201291.y"
+#line 569 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : variable INCOP "<<endl<<endl;
         outlog<<(yyvsp[(1) - (2)])->getname()<<"++"<<endl<<endl;
             
         (yyval) = new symbol_info((yyvsp[(1) - (2)])->getname()+"++","fctr");
+        (yyval)->set_var_type((yyvsp[(1) - (2)])->get_var_type());
     }
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 543 "22201299_22201291.y"
+#line 577 "22201299_22201291.y"
     {
         outlog<<"At line no: "<<lines<<" factor : variable DECOP "<<endl<<endl;
         outlog<<(yyvsp[(1) - (2)])->getname()<<"--"<<endl<<endl;
             
         (yyval) = new symbol_info((yyvsp[(1) - (2)])->getname()+"--","fctr");
+        (yyval)->set_var_type((yyvsp[(1) - (2)])->get_var_type());
     }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 552 "22201299_22201291.y"
+#line 587 "22201299_22201291.y"
     {
                     outlog<<"At line no: "<<lines<<" argument_list : arguments "<<endl<<endl;
                     outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -2269,7 +2304,7 @@ yyreduce:
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 559 "22201299_22201291.y"
+#line 594 "22201299_22201291.y"
     {
                     outlog<<"At line no: "<<lines<<" argument_list :  "<<endl<<endl;
                     outlog<<""<<endl<<endl;
@@ -2280,7 +2315,7 @@ yyreduce:
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 568 "22201299_22201291.y"
+#line 603 "22201299_22201291.y"
     {
                 outlog<<"At line no: "<<lines<<" arguments : arguments COMMA logic_expression "<<endl<<endl;
                 outlog<<(yyvsp[(1) - (3)])->getname()<<","<<(yyvsp[(3) - (3)])->getname()<<endl<<endl;
@@ -2291,7 +2326,7 @@ yyreduce:
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 575 "22201299_22201291.y"
+#line 610 "22201299_22201291.y"
     {
                 outlog<<"At line no: "<<lines<<" arguments : logic_expression "<<endl<<endl;
                 outlog<<(yyvsp[(1) - (1)])->getname()<<endl<<endl;
@@ -2302,7 +2337,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 2306 "y.tab.c"
+#line 2341 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2534,7 +2569,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 584 "22201299_22201291.y"
+#line 619 "22201299_22201291.y"
 
 
 int main(int argc, char *argv[])

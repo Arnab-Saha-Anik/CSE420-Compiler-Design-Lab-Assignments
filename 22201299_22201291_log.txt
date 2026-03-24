@@ -117,27 +117,27 @@ a[2]
 
 At line no: 6 declaration_list : declaration_list COMMA ID 
 
-a,c
+a[2],c
 
 At line no: 6 declaration_list : declaration_list COMMA ID 
 
-a,i
+a[2], c,i
 
 At line no: 6 declaration_list : declaration_list COMMA ID 
 
-a,j
+a[2], c, i,j
 
 At line no: 6 var_declaration : type_specifier declaration_list SEMICOLON 
 
-int a;
+int a[2], c, i, j;
 
 At line no: 6 statement : var_declaration 
 
-int a;
+int a[2], c, i, j;
 
 At line no: 6 statements : statement 
 
-int a;
+int a[2], c, i, j;
 
 At line no: 6 type_specifier : FLOAT 
 
@@ -157,7 +157,7 @@ float c;
 
 At line no: 6 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 
 At line no: 7 factor : CONST_FLOAT 
@@ -191,6 +191,8 @@ At line no: 7 expression : logic_expression
 At line no: 7 variable : ID LTHIRD expression RTHIRD 
 
 a[2.5]
+
+At line no: 7 array index is not of integer type : a
 
 At line no: 7 factor : CONST_INT 
 
@@ -230,7 +232,7 @@ a[2.5]=1;
 
 At line no: 7 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 
@@ -276,7 +278,7 @@ i=2.3;
 
 At line no: 8 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -335,7 +337,7 @@ j=2%3.7;
 
 At line no: 9 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -383,7 +385,7 @@ a=4;
 
 At line no: 10 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -464,7 +466,7 @@ func(a);
 
 At line no: 11 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -514,7 +516,7 @@ b=8;
 
 At line no: 12 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -557,7 +559,7 @@ return 0;
 
 At line no: 13 statements : statements statement 
 
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -570,7 +572,7 @@ return 0;
 At line no: 14 compound_statement : LCURL statements RCURL 
 
 {
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -628,7 +630,7 @@ At line no: 14 func_definition : type_specifier ID LPAREN RPAREN compound_statem
 
 int main()
 {
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -643,7 +645,7 @@ At line no: 14 unit : func_definition
 
 int main()
 {
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -662,7 +664,7 @@ return a;
 }
 int main()
 {
-int a;
+int a[2], c, i, j;
 float c;
 a[2.5]=1;
 i=2.3;
@@ -699,4 +701,4 @@ Parameter Details: int a
 
 Total lines: 15
 
-Total errors: 0
+Total errors: 1
