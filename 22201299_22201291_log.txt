@@ -347,6 +347,8 @@ At line no: 10 variable : ID
 
 a
 
+At line no: 10 variable is of array type : a
+
 At line no: 10 factor : CONST_INT 
 
 4
@@ -395,6 +397,8 @@ a=4;
 At line no: 11 variable : ID 
 
 a
+
+At line no: 11 variable is of array type : a
 
 At line no: 11 factor : variable 
 
@@ -477,6 +481,8 @@ func(a);
 At line no: 12 variable : ID 
 
 b
+
+At line no: 12 Undeclared variable b
 
 At line no: 12 factor : CONST_INT 
 
@@ -701,4 +707,4 @@ Parameter Details: int a
 
 Total lines: 15
 
-Total errors: 1
+Total errors: 4

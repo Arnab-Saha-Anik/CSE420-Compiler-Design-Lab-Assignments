@@ -40,6 +40,13 @@ symbol_info* get_variable_info(string name) {
     return found;  // Returns the entry with "array", "int", "float" info
 }
 
+bool is_variable_declared_current_scope(string name) {
+    symbol_info* temp = new symbol_info(name, "ID");
+    symbol_info* found = sym_table->lookup(temp);
+    delete temp;
+    return found != NULL;
+}
+
 %}
 
 %token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN SWITCH CASE DEFAULT CONTINUE PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON CONST_INT CONST_FLOAT ID
@@ -361,6 +368,7 @@ statement : var_declaration
             outlog<<"return "<<$2->getname()<<";"<<endl<<endl;
             
             $$ = new symbol_info("return "+$2->getname()+";","stmnt");
+            $$->set_var_type($2->get_var_type());
       }
       ;
       
@@ -384,8 +392,24 @@ variable : ID
       {
         outlog<<"At line no: "<<lines<<" variable : ID "<<endl<<endl;
         outlog<<$1->getname()<<endl<<endl;
-            
+        
+        symbol_info* var_info = get_variable_info($1->getname());
         $$ = new symbol_info($1->getname(),"varbl");
+        
+        if (!var_info) {
+            outlog<<"At line no: "<<lines<<" Undeclared variable "<<$1->getname()<<endl<<endl;
+            errlog<<"At line no: "<<lines<<" Undeclared variable "<<$1->getname()<<endl<<endl;
+            errcount++;
+        }
+        else if (var_info->get_symbol_type() == "array") {
+            outlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
+            errlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
+            errcount++;    
+        }
+        else {
+            $$->set_var_type(var_info->get_var_type());
+            $$->set_symbol_type(var_info->get_symbol_type());
+        }
         
      }	
      | ID LTHIRD expression RTHIRD 
@@ -638,7 +662,7 @@ int main(int argc, char *argv[])
     
     outlog<<endl<<"Total lines: "<<lines<<endl;
     outlog<<endl<<"Total errors: "<<errcount<<endl;
-    errlog<<endl<<"Total errors: "<<errcount<<endl; 
+    errlog<<"Total errors: "<<errcount<<endl; 
     
     outlog.close();
     errlog.close();
