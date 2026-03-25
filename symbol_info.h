@@ -8,7 +8,6 @@ private:
     string type;
     string symbol_type = "";
     string return_type = "";
-    string var_type = "";
     vector<symbol_info *> parameters = {};
     int array_size = 0;
 
@@ -35,10 +34,6 @@ public:
     {
         return return_type;
     }
-    string get_var_type()
-    {
-        return var_type;
-    }
     vector<symbol_info *> get_parameters()
     {
         return parameters;
@@ -62,10 +57,6 @@ public:
     void set_return_type(string return_type)
     {
         this->return_type = return_type;
-    }
-    void set_var_type(string var_type)
-    {
-        this->var_type = var_type;
     }
     void set_parameters(vector<symbol_info*> parameters)
     {
