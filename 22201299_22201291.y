@@ -137,6 +137,7 @@ parameter_list : parameter_list COMMA type_specifier ID
             $$ = new symbol_info($1->getname()+","+$3->getname()+" "+$4->getname(),"param_list");
             symbol_info *param = new symbol_info($4->getname(), $3->getname());
             current_parameters.push_back(param);
+            $$->set_var_type($3->get_var_type());
         }
         | parameter_list COMMA type_specifier
         {
@@ -152,6 +153,7 @@ parameter_list : parameter_list COMMA type_specifier ID
             $$ = new symbol_info($1->getname()+" "+$2->getname(),"param_list");
             symbol_info *param = new symbol_info($2->getname(), $1->getname());
             current_parameters.push_back(param);
+            $$->set_var_type($1->get_var_type());
         }
         | type_specifier
         {
@@ -214,6 +216,7 @@ type_specifier : INT
             
             $$ = new symbol_info("int","type");
             current_type = "int";
+            $$->set_var_type(current_type);
         }
          | FLOAT
          {
@@ -222,6 +225,7 @@ type_specifier : INT
             
             $$ = new symbol_info("float","type");
             current_type = "float";
+            $$->set_var_type(current_type);
         }
          | VOID
          {
@@ -230,6 +234,7 @@ type_specifier : INT
             
             $$ = new symbol_info("void","type");
             current_type = "void";
+            $$->set_var_type(current_type);
         }
         ;
 
@@ -406,10 +411,6 @@ variable : ID
             errlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
             errcount++;    
         }
-        else {
-            $$->set_var_type(var_info->get_var_type());
-            $$->set_symbol_type(var_info->get_symbol_type());
-        }
         
      }	
      | ID LTHIRD expression RTHIRD 
@@ -518,6 +519,11 @@ term :	unary_expression
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"term");
             $$->set_var_type($1->get_var_type());
+            if ($2->getname() == "%" && ($1->get_var_type() != "int" || $3->get_var_type() != "int")) {
+                outlog<<"At line no: "<<lines<<" Modulus operator on non integer type"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Modulus operator on non integer type"<<endl<<endl;
+                errcount++;
+            }
             
      }
      ;

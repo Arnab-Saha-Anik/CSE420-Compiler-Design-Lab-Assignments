@@ -311,6 +311,8 @@ At line no: 9 term : term MULOP unary_expression
 
 2%3.7
 
+At line no: 9 Modulus operator on non integer type
+
 At line no: 9 simple_expression : term 
 
 2%3.7
@@ -707,4 +709,4 @@ Parameter Details: int a
 
 Total lines: 15
 
-Total errors: 4
+Total errors: 5

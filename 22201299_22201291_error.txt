@@ -1,9 +1,11 @@
 At line no: 7 array index is not of integer type : a
 
+At line no: 9 Modulus operator on non integer type
+
 At line no: 10 variable is of array type : a
 
 At line no: 11 variable is of array type : a
 
 At line no: 12 Undeclared variable b
 
-Total errors: 4
+Total errors: 5
