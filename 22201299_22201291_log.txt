@@ -66,7 +66,7 @@ ScopeTable # 2
 7 --> 
 < a : ID >
 Variable
-Type: ID
+Type: int
 
 ScopeTable # 1
 8 --> 
@@ -222,6 +222,8 @@ At line no: 7 expression : variable ASSIGNOP logic_expression
 
 a[2.5]=1
 
+float
+lgc_expr
 At line no: 7 expression_statement : expression SEMICOLON 
 
 a[2.5]=1;
@@ -268,6 +270,8 @@ At line no: 8 expression : variable ASSIGNOP logic_expression
 
 i=2.3
 
+float
+lgc_expr
 At line no: 8 expression_statement : expression SEMICOLON 
 
 i=2.3;
@@ -329,6 +333,8 @@ At line no: 9 expression : variable ASSIGNOP logic_expression
 
 j=2%3.7
 
+float
+lgc_expr
 At line no: 9 expression_statement : expression SEMICOLON 
 
 j=2%3.7;
@@ -379,6 +385,8 @@ At line no: 10 expression : variable ASSIGNOP logic_expression
 
 a=4
 
+float
+lgc_expr
 At line no: 10 expression_statement : expression SEMICOLON 
 
 a=4;
@@ -514,6 +522,8 @@ At line no: 12 expression : variable ASSIGNOP logic_expression
 
 b=8
 
+float
+lgc_expr
 At line no: 12 expression_statement : expression SEMICOLON 
 
 b=8;

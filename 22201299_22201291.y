@@ -438,6 +438,13 @@ expression : logic_expression
         	outlog<<"At line no: "<<lines<<" expression : variable ASSIGNOP logic_expression "<<endl<<endl;
             outlog<<$1->getname()<<"="<<$3->getname()<<endl<<endl;
             $$ = new symbol_info($1->getname()+"="+$3->getname(),"expr");
+            outlog<<current_type<<endl;
+            outlog<<$3->get_type()<<endl;
+            if ($1->get_type() == "int" && $3->get_type() == "float") {
+                outlog<<"At line no: "<<lines<<" Warning: Assignment of float value into variable of integer type"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Warning: Assignment of float value into variable of integer type"<<endl<<endl;
+                errcount++;
+            }
        }
        ;
             
