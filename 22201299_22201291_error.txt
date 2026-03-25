@@ -1,11 +1,15 @@
-At line no: 7 array index is not of integer type : a
+At line no: 39 Multiple declaration of a
 
-At line no: 9 Modulus operator on non integer type
+At line no: 39 Multiple declaration of c
 
-At line no: 10 variable is of array type : a
+At line no: 44 variable is of array type : c
 
-At line no: 11 variable is of array type : a
+At line no: 47 Undeclared variable k
 
-At line no: 12 Undeclared variable b
+At line no: 49 array index is not of integer type : c
 
-Total errors: 5
+At line no: 54 Warning: Assignment of float value into variable of integer type
+
+At line no: 56 Modulus operator on non integer type
+
+Total errors: 7
