@@ -26,6 +26,7 @@ ofstream errlog;
 string current_type;
 vector<symbol_info*> current_parameters;
 vector<symbol_info*> single_declared_variables;
+string func_name;
 
 void yyerror(char *s)
 {
@@ -136,8 +137,21 @@ parameter_list : parameter_list COMMA type_specifier ID
             outlog<<$1->getname()<<","<<$3->getname()<<" "<<$4->getname()<<endl<<endl;
                     
             $$ = new symbol_info($1->getname()+","+$3->getname()+" "+$4->getname(),"param_list");
-            symbol_info *param = new symbol_info($4->getname(), $3->getname());
-            current_parameters.push_back(param);
+            bool same_parameter_exists = false;
+            for (auto p : current_parameters) {
+                if (p->getname() == $4->getname()) {
+                    same_parameter_exists = true;
+                    outlog<<"At line no: "<<lines<<" Multiple declaration of variable "<<$4->getname()<<" in parameter of "<<func_name<<endl<<endl;
+                    errlog<<"At line no: "<<lines<<" Multiple declaration of variable "<<$4->getname()<<" in parameter of "<<func_name<<endl<<endl;
+                    errcount++;
+                    break;
+                }
+            }
+            if (!same_parameter_exists) {
+
+                symbol_info *param = new symbol_info($4->getname(), $3->getname());
+                current_parameters.push_back(param);
+            }
         }
         | parameter_list COMMA type_specifier
         {
@@ -146,11 +160,10 @@ parameter_list : parameter_list COMMA type_specifier ID
             $$ = new symbol_info($1->getname()+","+$3->getname(),"param_list");
         }
          | type_specifier ID
-         {
+         {  
             outlog<<"At line no: "<<lines<<" parameter_list : type_specifier ID "<<endl<<endl;
             outlog<<$1->getname()<<" "<<$2->getname()<<endl<<endl;
             
-            $$ = new symbol_info($1->getname()+" "+$2->getname(),"param_list");
             symbol_info *param = new symbol_info($2->getname(), $1->getname());
             current_parameters.push_back(param);
         }
@@ -171,8 +184,9 @@ compound_statement : LCURL
                     for(auto param : current_parameters) { 
                         if(!param->getname().empty()) {
                             symbol_info* param_symbol = new symbol_info(param->getname(), "ID");           
-                            param_symbol->set_symbol_type("variable"); 
-                            param_symbol->set_type(param->get_type());   
+                            param_symbol->set_symbol_type("variable");
+                            param_symbol->set_type(param->get_type());
+                               
                             sym_table->insert(param_symbol);
                         }
                     }
@@ -204,14 +218,27 @@ var_declaration : type_specifier declaration_list SEMICOLON
             outlog<<"At line no: "<<lines<<" var_declaration : type_specifier declaration_list SEMICOLON "<<endl<<endl;
             outlog<<$1->getname()<<" "<<$2->getname()<<";"<<endl<<endl;
             for (auto sym : single_declared_variables) {
+                if ($1->getname() == "void") {
+                    outlog<<"At line no: "<<lines<<" variable type can not be void"<<endl<<endl;
+                    errlog<<"At line no: "<<lines<<" variable type can not be void"<<endl<<endl;
+                    errcount++;
+                    sym->set_type("error");
+                }
+                else {
+                    sym->set_type(current_type);
+                }
+
                 if (!sym_table->insert(sym)) {
                     outlog<<"At line no: "<<lines<<" Multiple declaration of "<<sym->getname()<<endl<<endl;
                     errlog<<"At line no: "<<lines<<" Multiple declaration of "<<sym->getname()<<endl<<endl;
                     errcount++;
                 }
+
             }
             single_declared_variables.clear();
-            $$ = new symbol_info($1->getname()+" "+$2->getname()+";","var_dec");
+
+            $$ = new symbol_info($1->getname()+" "+$2->getname()+";","var_dec");                
+            
 
          }
           ;
@@ -368,8 +395,13 @@ statement : var_declaration
       {
         	outlog<<"At line no: "<<lines<<" statement : PRINTLN LPAREN ID RPAREN SEMICOLON "<<endl<<endl;
             outlog<<"printf("<<$3->getname()<<");"<<endl<<endl; 
-            
             $$ = new symbol_info("printf("+$3->getname()+");","stmnt");
+            symbol_info* var_info = get_variable_info($3->getname());
+            if (!var_info) {
+                outlog<<"At line no: "<<lines<<" Undeclared variable "<<$3->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Undeclared variable "<<$3->getname()<<endl<<endl;
+                errcount++;
+            }
       }
       | RETURN expression SEMICOLON
       {
@@ -399,7 +431,6 @@ expression_statement : SEMICOLON
 variable : ID 	
       {
         outlog<<"At line no: "<<lines<<" variable : ID "<<endl<<endl;
-        outlog<<$1->getname()<<endl<<endl;
         
         symbol_info* var_info = get_variable_info($1->getname());
         $$ = new symbol_info($1->getname(),"varbl");
@@ -425,11 +456,16 @@ variable : ID
         
         symbol_info* var_info = get_variable_info($1->getname());
         $$ = new symbol_info($1->getname()+"["+$3->getname()+"]","varbl");
-        if (var_info && var_info->get_symbol_type() == "array") {
+        if (var_info->get_symbol_type() != "array") {
+            outlog<<"At line no: "<<lines<<" variable is not of array type : "<<var_info->getname()<<endl<<endl;
+            errlog<<"At line no: "<<lines<<" variable is not of array type : "<<var_info->getname()<<endl<<endl;
+            errcount++;
+        }
+        else if (var_info && var_info->get_symbol_type() == "array") {
             $$->set_type(var_info->get_type());
             if ($3->get_type() != "int") {
-                outlog<<"At line no: "<<lines<<" array index is not of integer type : "<<$1->getname()<<endl<<endl;
-                errlog<<"At line no: "<<lines<<" array index is not of integer type : "<<$1->getname()<<endl<<endl;
+                outlog<<"At line no: "<<lines<<" array index is not of integer type : "<<var_info->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" array index is not of integer type : "<<var_info->getname()<<endl<<endl;
                 errcount++;
             }
         }
@@ -449,8 +485,13 @@ expression : logic_expression
         	outlog<<"At line no: "<<lines<<" expression : variable ASSIGNOP logic_expression "<<endl<<endl;
             outlog<<$1->getname()<<"="<<$3->getname()<<endl<<endl;
             $$ = new symbol_info($1->getname()+"="+$3->getname(),"expr");
-            $$->set_type($1->get_type());           
-            if ($1->get_type() == "int" && $3->get_type() == "float") {
+            $$->set_type($1->get_type());
+            if ($1->get_type() == "void" || $3->get_type() == "void") {
+                outlog<<"At line no: "<<lines<<" operation on void type"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" operation on void type"<<endl<<endl;
+                errcount++;
+            }
+            else if ($1->get_type() == "int" && $3->get_type() == "float") {
                 outlog<<"At line no: "<<lines<<" Warning: Assignment of float value into variable of integer type"<<endl<<endl;
                 errlog<<"At line no: "<<lines<<" Warning: Assignment of float value into variable of integer type"<<endl<<endl;
                 errcount++;
@@ -531,7 +572,22 @@ term :	unary_expression
             outlog<<$1->getname()<<$2->getname()<<$3->getname()<<endl<<endl;
             
             $$ = new symbol_info($1->getname()+$2->getname()+$3->getname(),"term");
-            if ($2->getname() == "%" && ($1->get_type() != "int" || $3->get_type() != "int")) {
+            if (($1->get_type() == "void" || $3->get_type() == "void")) {
+                outlog<<"At line no: "<<lines<<" operation on void type"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" operation on void type"<<endl<<endl;
+                errcount++; 
+            }
+            else if ($2->getname() == "%" && ($3->getname() == "0" || $3->getname() == "0.0")) {
+                outlog<<"At line no: "<<lines<<" Modulus by 0"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Modulus by 0"<<endl<<endl;
+                errcount++; 
+            }
+            else if ($2->getname() == "/" && ($3->getname() == "0" || $3->getname() == "0.0")) {
+                outlog<<"At line no: "<<lines<<" Division by 0"<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Division by 0"<<endl<<endl;
+                errcount++; 
+            }
+            else if ($2->getname() == "%" && ($1->get_type() != "int" || $3->get_type() != "int")) {
                 outlog<<"At line no: "<<lines<<" Modulus operator on non integer type"<<endl<<endl;
                 errlog<<"At line no: "<<lines<<" Modulus operator on non integer type"<<endl<<endl;
                 errcount++;

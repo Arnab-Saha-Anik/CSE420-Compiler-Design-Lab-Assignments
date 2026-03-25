@@ -67,7 +67,7 @@ int
 
 At line no: 3 parameter_list : parameter_list COMMA type_specifier ID 
 
-int c,int d
+int,int d
 
 New ScopeTable with ID 2 created
 
@@ -160,14 +160,14 @@ Scopetable with ID 2 removed
 
 At line no: 5 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
 
 At line no: 5 unit : func_definition 
 
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
@@ -176,7 +176,7 @@ At line no: 5 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
@@ -199,13 +199,11 @@ float
 
 At line no: 7 parameter_list : parameter_list COMMA type_specifier ID 
 
-int a,float b
+int,float b
 
 New ScopeTable with ID 3 created
 
 At line no: 8 variable : ID 
-
-a
 
 varbl
 At line no: 8 factor : variable 
@@ -320,14 +318,14 @@ Scopetable with ID 3 removed
 
 At line no: 9 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
 
 At line no: 9 unit : func_definition 
 
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
@@ -336,11 +334,11 @@ At line no: 9 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
@@ -360,8 +358,6 @@ int a
 New ScopeTable with ID 4 created
 
 At line no: 13 variable : ID 
-
-y
 
 varbl
 At line no: 13 factor : CONST_INT 
@@ -466,14 +462,14 @@ Scopetable with ID 4 removed
 
 At line no: 14 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
 
 At line no: 14 unit : func_definition 
 
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
@@ -482,15 +478,15 @@ At line no: 14 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
@@ -513,7 +509,9 @@ int
 
 At line no: 16 parameter_list : parameter_list COMMA type_specifier ID 
 
-int a,int a
+int,int a
+
+At line no: 16 Multiple declaration of variable a in parameter of 
 
 At line no: 16 type_specifier : FLOAT 
 
@@ -521,13 +519,11 @@ float
 
 At line no: 16 parameter_list : parameter_list COMMA type_specifier ID 
 
-int a,int a,float b
+int,int a,float b
 
 New ScopeTable with ID 5 created
 
 At line no: 17 variable : ID 
-
-a
 
 varbl
 At line no: 17 factor : variable 
@@ -634,8 +630,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 7 --> 
 < a : ID >
@@ -655,14 +651,14 @@ Scopetable with ID 5 removed
 
 At line no: 18 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
 
 At line no: 18 unit : func_definition 
 
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
@@ -671,19 +667,19 @@ At line no: 18 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
@@ -706,13 +702,11 @@ int
 
 At line no: 20 parameter_list : parameter_list COMMA type_specifier ID 
 
-int a,int b
+int,int b
 
 New ScopeTable with ID 6 created
 
 At line no: 21 variable : ID 
-
-y
 
 varbl
 At line no: 21 factor : CONST_INT 
@@ -807,8 +801,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -835,14 +829,14 @@ Scopetable with ID 6 removed
 
 At line no: 22 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
 
 At line no: 22 unit : func_definition 
 
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
@@ -851,23 +845,23 @@ At line no: 22 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
@@ -887,8 +881,6 @@ int d
 New ScopeTable with ID 7 created
 
 At line no: 25 variable : ID 
-
-d
 
 varbl
 At line no: 25 factor : variable 
@@ -974,8 +966,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -1002,14 +994,14 @@ Scopetable with ID 7 removed
 
 At line no: 26 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-int z(int d)
+int z(int)
 {
 return d;
 }
 
 At line no: 26 unit : func_definition 
 
-int z(int d)
+int z(int)
 {
 return d;
 }
@@ -1018,27 +1010,27 @@ At line no: 26 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
-int z(int d)
+int z(int)
 {
 return d;
 }
@@ -1058,8 +1050,6 @@ int a
 New ScopeTable with ID 8 created
 
 At line no: 29 variable : ID 
-
-a
 
 varbl
 At line no: 29 factor : variable 
@@ -1145,8 +1135,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -1180,14 +1170,14 @@ Scopetable with ID 8 removed
 
 At line no: 30 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-int var(int a)
+int var(int)
 {
 return a;
 }
 
 At line no: 30 unit : func_definition 
 
-int var(int a)
+int var(int)
 {
 return a;
 }
@@ -1196,31 +1186,31 @@ At line no: 30 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
-int z(int d)
+int z(int)
 {
 return d;
 }
-int var(int a)
+int var(int)
 {
 return a;
 }
@@ -1240,8 +1230,6 @@ int a
 New ScopeTable with ID 9 created
 
 At line no: 33 variable : ID 
-
-a
 
 varbl
 At line no: 33 factor : variable 
@@ -1343,8 +1331,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -1385,14 +1373,14 @@ Scopetable with ID 9 removed
 
 At line no: 34 func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement 
 
-void foo4(int a)
+void foo4(int)
 {
 return a;
 }
 
 At line no: 34 unit : func_definition 
 
-void foo4(int a)
+void foo4(int)
 {
 return a;
 }
@@ -1401,35 +1389,35 @@ At line no: 34 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
-int z(int d)
+int z(int)
 {
 return d;
 }
-int var(int a)
+int var(int)
 {
 return a;
 }
-void foo4(int a)
+void foo4(int)
 {
 return a;
 }
@@ -1487,6 +1475,8 @@ e
 At line no: 38 var_declaration : type_specifier declaration_list SEMICOLON 
 
 void e;
+
+At line no: 38 variable type can not be void
 
 At line no: 38 statement : var_declaration 
 
@@ -1632,12 +1622,8 @@ func(2.5,3.5);
 
 At line no: 44 variable : ID 
 
-a
-
 varbl
 At line no: 44 variable : ID 
-
-a
 
 varbl
 At line no: 44 factor : variable 
@@ -1669,8 +1655,6 @@ At line no: 44 arguments : logic_expression
 a
 
 At line no: 44 variable : ID 
-
-c
 
 At line no: 44 variable is of array type : c
 
@@ -1753,12 +1737,8 @@ a=correct_foo(a,c);
 
 At line no: 45 variable : ID 
 
-b
-
 varbl
 At line no: 45 variable : ID 
-
-a
 
 varbl
 At line no: 45 factor : variable 
@@ -1839,8 +1819,6 @@ a=correct_foo(a,c);
 b=correct_foo(a);
 
 At line no: 47 variable : ID 
-
-k
 
 At line no: 47 Undeclared variable k
 
@@ -1937,6 +1915,8 @@ At line no: 48 expression : logic_expression
 At line no: 48 variable : ID LTHIRD expression RTHIRD 
 
 b[5]
+
+At line no: 48 variable is not of array type : b
 
 At line no: 48 factor : CONST_INT 
 
@@ -2170,6 +2150,8 @@ foo4(7)
 At line no: 50 term : term MULOP unary_expression 
 
 5*foo4(7)
+
+At line no: 50 operation on void type
 
 At line no: 50 simple_expression : simple_expression ADDOP term 
 
@@ -2529,6 +2511,8 @@ At line no: 53 expression : variable ASSIGNOP logic_expression
 
 c[2]=foo4(c[1])
 
+At line no: 53 operation on void type
+
 At line no: 53 expression_statement : expression SEMICOLON 
 
 c[2]=foo4(c[1]);
@@ -2642,8 +2626,6 @@ c[3]=2.7;
 
 At line no: 55 variable : ID 
 
-b
-
 varbl
 At line no: 55 factor : CONST_INT 
 
@@ -2668,6 +2650,8 @@ At line no: 55 unary_expression : factor
 At line no: 55 term : term MULOP unary_expression 
 
 5%0
+
+At line no: 55 Modulus by 0
 
 At line no: 55 simple_expression : term 
 
@@ -2712,8 +2696,6 @@ c[3]=2.7;
 b=5%0;
 
 At line no: 56 variable : ID 
-
-b
 
 varbl
 At line no: 56 factor : CONST_INT 
@@ -2787,12 +2769,8 @@ b=2%3.5;
 
 At line no: 58 variable : ID 
 
-dd
-
 varbl
 At line no: 58 variable : ID 
-
-a
 
 varbl
 At line no: 58 factor : variable 
@@ -2886,6 +2864,8 @@ dd=foo5(a);
 At line no: 60 statement : PRINTLN LPAREN ID RPAREN SEMICOLON 
 
 printf(h);
+
+At line no: 60 Undeclared variable h
 
 At line no: 60 statements : statements statement 
 
@@ -2997,7 +2977,7 @@ Type: int
 1 --> 
 < e : ID >
 Variable
-Type: void
+Type: error
 
 2 --> 
 < ee : ID >
@@ -3059,8 +3039,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -3153,35 +3133,35 @@ At line no: 64 program : program unit
 
 int x, y, z;
 float a;
-int func(int c,int d)
+int func(int,int d)
 {
 return 7;
 }
-int correct_foo(int a,float b)
+int correct_foo(int,float b)
 {
 return a;
 }
-void foo(int a)
+void foo(int)
 {
 y=6;
 }
-int foo2(int a,int a,float b)
+int foo2(int,int a,float b)
 {
 return a;
 }
-void foo3(int a,int b)
+void foo3(int,int b)
 {
 y=7;
 }
-int z(int d)
+int z(int)
 {
 return d;
 }
-int var(int a)
+int var(int)
 {
 return a;
 }
-void foo4(int a)
+void foo4(int)
 {
 return a;
 }
@@ -3253,8 +3233,8 @@ Parameter Details: int a
 < foo2 : ID >
 Function Definition
 Return Type: int
-Number of Parameters: 3
-Parameter Details: int a, int a, float b
+Number of Parameters: 2
+Parameter Details: int a, float b
 
 5 --> 
 < foo3 : ID >
@@ -3294,4 +3274,4 @@ Parameter Details: int a
 
 Total lines: 65
 
-Total errors: 7
+Total errors: 14
