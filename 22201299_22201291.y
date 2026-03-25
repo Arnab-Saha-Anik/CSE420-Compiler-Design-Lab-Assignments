@@ -171,8 +171,9 @@ compound_statement : LCURL
                 if (!current_parameters.empty()) {
                     for(auto param : current_parameters) { 
                         if(!param->getname().empty()) {
-                            symbol_info* param_symbol = new symbol_info(param->getname(), "ID");
-                            param_symbol->set_symbol_type(param->get_type());
+                            symbol_info* param_symbol = new symbol_info(param->getname(), "ID");           
+                            param_symbol->set_symbol_type("variable"); 
+                            param_symbol->set_type(param->get_type());   
                             sym_table->insert(param_symbol);
                         }
                     }
