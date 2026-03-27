@@ -37,9 +37,9 @@ void yyerror(char *s)
 
 symbol_info* get_variable_info(string name) {
     symbol_info* temp = new symbol_info(name, "ID");
-    symbol_info* found = sym_table->lookup(temp);  // Search in symbol table
+    symbol_info* found = sym_table->lookup(temp);
     delete temp;
-    return found;  // Returns the entry with "array", "int", "float" info
+    return found;
 }
 
 bool is_variable_declared_current_scope(string name) {
@@ -97,7 +97,10 @@ unit : var_declaration
      }
      ;
 
-func_definition : type_specifier ID LPAREN parameter_list RPAREN
+func_definition : type_specifier ID LPAREN {
+            func_name = $2->getname();
+        }
+        parameter_list RPAREN
         {	    
             $2->set_symbol_type("function");
             $2->set_return_type($1->getname());
@@ -108,9 +111,9 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
         compound_statement
         {	
             outlog<<"At line no: "<<lines<<" func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement "<<endl<<endl;
-            outlog<<$1->getname()<<" "<<$2->getname()<<"("+$4->getname()+")\n"<<$7->getname()<<endl<<endl;
+            outlog<<$1->getname()<<" "<<$2->getname()<<"("+$5->getname()+")\n"<<$8->getname()<<endl<<endl;
             
-            $$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$4->getname()+")\n"+$7->getname(),"func_def");
+            $$ = new symbol_info($1->getname()+" "+$2->getname()+"("+$5->getname()+")\n"+$8->getname(),"func_def");
 
         }
         | type_specifier ID LPAREN RPAREN
@@ -163,9 +166,18 @@ parameter_list : parameter_list COMMA type_specifier ID
          {  
             outlog<<"At line no: "<<lines<<" parameter_list : type_specifier ID "<<endl<<endl;
             outlog<<$1->getname()<<" "<<$2->getname()<<endl<<endl;
-            
+
+            $$ = new symbol_info($1->getname()+" "+$2->getname(),"param_list");
             symbol_info *param = new symbol_info($2->getname(), $1->getname());
             current_parameters.push_back(param);
+            symbol_info* already_exists_name = get_variable_info(func_name);
+            if (already_exists_name) {
+                outlog<<"At line no: "<<lines<<" Multiple declaration of function "<<already_exists_name->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Multiple declaration of function "<<already_exists_name->getname()<<endl<<endl;
+                errcount++;               
+            }
+
+
         }
         | type_specifier
         {
@@ -229,8 +241,8 @@ var_declaration : type_specifier declaration_list SEMICOLON
                 }
 
                 if (!sym_table->insert(sym)) {
-                    outlog<<"At line no: "<<lines<<" Multiple declaration of "<<sym->getname()<<endl<<endl;
-                    errlog<<"At line no: "<<lines<<" Multiple declaration of "<<sym->getname()<<endl<<endl;
+                    outlog<<"At line no: "<<lines<<" Multiple declaration of variable "<<sym->getname()<<endl<<endl;
+                    errlog<<"At line no: "<<lines<<" Multiple declaration of variable "<<sym->getname()<<endl<<endl;
                     errcount++;
                 }
 
@@ -441,12 +453,16 @@ variable : ID
             errcount++;
         }
         else {
+            $$->set_type(var_info->get_type()); 
             if (var_info->get_symbol_type() == "array") {
-            outlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
-            errlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
-            errcount++;    
+                outlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" variable is of array type : "<<$1->getname()<<endl<<endl;
+                errcount++;   
+                $$->set_type("error"); 
             }
-            outlog<<$$->get_type()<<endl;  
+            else {
+                $$->set_type(var_info->get_type()); 
+            }  
         }          
      }	
      | ID LTHIRD expression RTHIRD 
@@ -645,6 +661,32 @@ factor	: variable
         symbol_info* func_info = get_variable_info($1->getname());
         if (func_info) {
             $$->set_type(func_info->get_return_type());
+            vector<symbol_info*> arguments = $3->get_parameters();
+            int size = func_info->get_parameters().size();
+            int arguments_number = arguments.size();
+            if (size != arguments_number) {
+                outlog<<"At line no: "<<lines<<" Inconsistencies in number of arguments in function call: "<<func_info->getname()<<endl<<endl;
+                errlog<<"At line no: "<<lines<<" Inconsistencies in number of arguments in function call: "<<func_info->getname()<<endl<<endl;
+                errcount++;
+            }
+            else {
+                for (int i = 0; i < size; i++) {
+                    auto *param = func_info->get_parameters()[i];
+                    auto *argument = arguments[i];
+                    if ((param->get_type() != argument->get_type()) && (argument->get_type() != "error")) {
+                        outlog<<"At line no: "<<lines<<" argument "<<i + 1<<" type mismatch in function call: "<<func_info->getname()<<endl<<endl;
+                        errlog<<"At line no: "<<lines<<" argument "<<i + 1<<" type mismatch in function call: "<<func_info->getname()<<endl<<endl;
+                        errcount++;
+                    }
+                }
+
+            }
+
+        }
+        else {
+            outlog<<"At line no: "<<lines<<" Undeclared function: "<<$1->getname()<<endl<<endl;
+            errlog<<"At line no: "<<lines<<" Undeclared function: "<<$1->getname()<<endl<<endl;
+            errcount++;          
         }
 
     }
@@ -696,6 +738,7 @@ argument_list : arguments
                     outlog<<$1->getname()<<endl<<endl;
                         
                     $$ = new symbol_info($1->getname(),"arg_list");
+                    $$->set_parameters($1->get_parameters());
               }
               |
               {
@@ -712,6 +755,10 @@ arguments : arguments COMMA logic_expression
                 outlog<<$1->getname()<<","<<$3->getname()<<endl<<endl;
                         
                 $$ = new symbol_info($1->getname()+","+$3->getname(),"arg");
+                vector<symbol_info*> arguments = $1->get_parameters();
+                symbol_info* new_argument = new symbol_info($3->getname(), $3->get_type());
+                arguments.push_back(new_argument);
+                $$->set_parameters(arguments);
           }
           | logic_expression
           {
@@ -719,6 +766,10 @@ arguments : arguments COMMA logic_expression
                 outlog<<$1->getname()<<endl<<endl;
                         
                 $$ = new symbol_info($1->getname(),"arg");
+                vector<symbol_info*> arguments;
+                symbol_info* new_argument = new symbol_info($1->getname(), $1->get_type());
+                arguments.push_back(new_argument);
+                $$->set_parameters(arguments);
           }
           ;
  
