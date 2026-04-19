@@ -284,7 +284,7 @@ type_specifier : INT
 declaration_list : declaration_list COMMA ID
           {
            	outlog<<"At line no: "<<lines<<" declaration_list : declaration_list COMMA ID "<<endl<<endl;
-           	outlog<<$1->getname()+","<<$3->getname()<<endl<<endl;
+           	outlog<<$1->getname()+", "<<$3->getname()<<endl<<endl;
 
             // you may need to store the variable names to insert them in symbol table here or later
             $3->set_type(current_type);
@@ -443,6 +443,7 @@ expression_statement : SEMICOLON
 variable : ID 	
       {
         outlog<<"At line no: "<<lines<<" variable : ID "<<endl<<endl;
+        outlog<<$1->getname()<<endl<<endl;
         
         symbol_info* var_info = get_variable_info($1->getname());
         $$ = new symbol_info($1->getname(),"varbl");
