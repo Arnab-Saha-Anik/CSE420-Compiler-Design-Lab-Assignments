@@ -42,13 +42,6 @@ symbol_info* get_variable_info(string name) {
     return found;
 }
 
-bool is_variable_declared_current_scope(string name) {
-    symbol_info* temp = new symbol_info(name, "ID");
-    symbol_info* found = sym_table->lookup(temp);
-    delete temp;
-    return found != NULL;
-}
-
 %}
 
 %token IF ELSE FOR WHILE DO BREAK INT CHAR FLOAT DOUBLE VOID RETURN SWITCH CASE DEFAULT CONTINUE PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON CONST_INT CONST_FLOAT ID
