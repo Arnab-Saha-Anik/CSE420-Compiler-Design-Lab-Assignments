@@ -3,110 +3,88 @@
 class symbol_table
 {
 private:
-    scope_table *current_scope;
-    int bucket_count;
-    int current_scope_id;
-    ofstream& outlog;
-
+    scope_table *curr_scope = NULL;
+    int scope_size = 10;
+    int ID = 0;
 public:
-    symbol_table(int bucket_count, ofstream& outlog);
-    ~symbol_table();
-    void enter_scope();
-    void exit_scope();
-    bool insert(symbol_info* symbol);
-    bool remove(symbol_info* symbol);
-    symbol_info* lookup(symbol_info* symbol);
-    void print_current_scope_table(ofstream& outlog);
-    void print_all_scopes(ofstream& outlog);
+	int getID()
+	{
+		return curr_scope->getID();
+	}
+    void set_size(int n)
+    {
+        scope_size = n;
+    }
+    void enter_scope(ofstream& outlog)
+    {
+        ID+=1;
+        scope_table *new_scope = new scope_table(scope_size, ID);
+        new_scope->set_prnt(curr_scope);
+        curr_scope = new_scope;
+        outlog<<"New ScopeTable with ID "<<curr_scope->getID()<<" created"<<endl<<endl;
+        //if(new_scope->getID() != "1")cout<<curr_scope->getID()<<" "<<(curr_scope->get_prnt())->getID()<<endl;
+    }
+
+    void exit_scope(ofstream& outlog)
+    {
+    	outlog<<"Scopetable with ID "<<curr_scope->getID()<<" removed"<<endl<<endl;
+        scope_table *buffer = curr_scope;
+        curr_scope = curr_scope->get_prnt();
+        delete buffer;
+        buffer = NULL;
+        //cout<<curr_scope->getID()<<endl;
+    }
+
+    bool Insert_in_table(string name, string type)
+    {
+        if(curr_scope->Insert_in_scope(name,type)) return true;
+        else return false;
+    }
+
+    bool Remove_from_table(string name)
+    {
+        if(curr_scope->Delete_from_scope(name)) return true;
+        else return false;
+    }
+
+    symbol_info* Lookup_in_table(string name)
+    {
+        symbol_info *symbol = curr_scope->Lookup_in_scope(name);
+        scope_table *buffer_scope = curr_scope->get_prnt();
+        if(symbol==NULL)
+        {
+            while(buffer_scope!=NULL)
+            {
+                symbol = buffer_scope->Lookup_in_scope(name);
+                if(symbol!=NULL) return symbol;
+                buffer_scope = buffer_scope->get_prnt();
+            }
+        }
+        
+        return symbol;
+    }
+
+    void Print_current_scope()
+    {
+        //curr_scope->Print_scope();
+    }
+
+    void Print_all_scope(ofstream& outlog)
+    {
+        outlog<<"################################"<<endl<<endl;
+        scope_table *buffer = curr_scope;
+
+        while(buffer!=NULL)
+        {
+            buffer->Print_scope(outlog);
+            buffer = buffer->get_prnt();
+        }
+        outlog<<"################################"<<endl<<endl;
+    }
+
+    ~symbol_table()
+    {
+        delete curr_scope;
+    }
 
 };
-
-symbol_table::symbol_table(int bucket_count, ofstream& outlog) : outlog(outlog)
-{
-    this->bucket_count = bucket_count;
-    this->current_scope_id = 1;
-    current_scope = new scope_table(bucket_count, current_scope_id, NULL);
-    outlog << "New ScopeTable with ID " << current_scope->get_unique_id() << " created" << endl << endl;
-}
-
-symbol_table::~symbol_table()
-{
-    while (current_scope != NULL)
-    {
-        scope_table *temp = current_scope;
-        current_scope = current_scope->get_parent_scope();
-        delete temp;
-    }
-}
-
-void symbol_table::enter_scope()
-{
-    current_scope_id++;
-    scope_table *new_scope = new scope_table(bucket_count, current_scope_id, current_scope);
-    current_scope = new_scope;
-    outlog << "New ScopeTable with ID " << current_scope->get_unique_id() << " created" << endl << endl;
-}
-
-void symbol_table::exit_scope()
-{
-    if (current_scope != NULL)
-    {
-        scope_table *temp = current_scope;
-        outlog << "Scopetable with ID " << temp->get_unique_id() << " removed" << endl << endl;
-        current_scope = current_scope->get_parent_scope();
-        delete temp;
-    }
-}
-
-bool symbol_table::insert(symbol_info* symbol)
-{
-    if (current_scope != NULL)
-    {
-        return current_scope->insert_in_scope(symbol);
-    }
-    return false;
-}
-
-bool symbol_table::remove(symbol_info* symbol)
-{
-    if (current_scope != NULL)
-    {
-        return current_scope->delete_from_scope(symbol);
-    }
-    return false;
-}
-
-symbol_info* symbol_table::lookup(symbol_info* symbol)
-{
-    scope_table *temp = current_scope;
-    while (temp != NULL)
-    {
-        symbol_info *found = temp->lookup_in_scope(symbol);
-        if (found != NULL)
-        {
-            return found;
-        }
-        temp = temp->get_parent_scope();
-    }
-    return NULL;
-}
-
-void symbol_table::print_current_scope_table(ofstream& outlog)
-{
-    if (current_scope != NULL)
-    {
-        current_scope->print_scope_table(outlog);
-    }
-}
-
-void symbol_table::print_all_scopes(ofstream& outlog)
-{
-    outlog<<"################################"<<endl<<endl;
-    scope_table *temp = current_scope;
-    while (temp != NULL)
-    {   
-        temp->print_scope_table(outlog);
-        temp = temp->get_parent_scope();
-    }
-    outlog<<"################################"<<endl<<endl;
-}

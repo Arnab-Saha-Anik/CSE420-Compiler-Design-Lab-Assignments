@@ -1,73 +1,126 @@
+#ifndef SYMBOL_INFO_H
+#define SYMBOL_INFO_H
+
 #include <bits/stdc++.h>
 using namespace std;
+
+// Forward declaration of ASTNode
+class ASTNode;
 
 class symbol_info
 {
 private:
-    string name;
-    string type;
-    string symbol_type = "";
-    string return_type = "";
-    vector<symbol_info *> parameters = {};
-    int array_size = 0;
-
+    string sym_name;
+    string sym_type;
+    string ID_type; //var, array, func_dec, func_def
+    string var_type; //int, float, void, error
+    int array_size;
+    vector<string> param_list;//for functions
+    vector<string> param_name;
+    symbol_info *next_sym;
+    ASTNode* ast_node; // Pointer to AST node
 public:
+    //symbol_info(){}
     symbol_info(string name, string type)
     {
-        this->name = name;
-        this->type = type;
+        sym_name = name;
+        sym_type = type;
+        next_sym = NULL;
+        ast_node = NULL;
+    }
+
+    void set_next(symbol_info *symbol)
+    {
+        next_sym = symbol;
+    }
+
+    symbol_info* get_next()
+    {
+        return next_sym;
     }
 
     string getname()
     {
-        return name;
+        return sym_name;
     }
-    string get_type()
+    string gettype()
     {
-        return type;
+        return sym_type;
     }
-    string get_symbol_type()
+    
+    string getvartype()
     {
-        return symbol_type;
+        return var_type;
     }
-    string get_return_type()
+    
+    void setvartype(string tp)
     {
-        return return_type;
+    	var_type = tp;
     }
-    vector<symbol_info *> get_parameters()
+    
+    string getidtype()
     {
-        return parameters;
+        return ID_type;
     }
-    int get_array_size()
+    
+    void setidtype(string tp)
+    {
+    	ID_type = tp;
+    }
+    
+    int getarraysize()
     {
         return array_size;
     }
-    void set_name(string name)
+    
+    void setarraysize(int sz)
     {
-        this->name = name;
+    	array_size = sz;
     }
-    void set_type(string type)
+    
+    void setparamlist(vector<string> list)
     {
-        this->type = type;
+    	param_list = list;
     }
-    void set_symbol_type(string symbol_type)
+    
+    vector<string> getparamlist()
     {
-        this->symbol_type = symbol_type;
+    	return param_list;
     }
-    void set_return_type(string return_type)
+    
+    vector<string> getparamname()
     {
-        this->return_type = return_type;
+    	return param_name;
     }
-    void set_parameters(vector<symbol_info*> parameters)
+    
+    void setparamname(vector<string> list)
     {
-        this->parameters = parameters;
+    	param_name = list;
     }
-    void set_array_size(int array_size)
+    
+    int getparamsize()
     {
-        this->array_size = array_size;
+    	return param_list.size();
     }
+
+    // New methods for AST support
+    void set_ast_node(ASTNode* node)
+    {
+        ast_node = node;
+    }
+
+    ASTNode* get_ast_node()
+    {
+        return ast_node;
+    }
+
     ~symbol_info()
     {
-
+        delete next_sym;
+        param_list.clear();
+        param_name.clear();
+        // Don't delete ast_node here - will be managed separately
     }
 };
+
+#endif // SYMBOL_INFO_H
