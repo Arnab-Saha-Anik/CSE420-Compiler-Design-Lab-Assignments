@@ -13,7 +13,7 @@ g++ y.o l.o -o two_pass_compiler
 echo 'All ready, running the two-pass compiler...'
 
 # Run the compiler on the input file
-./two_pass_compiler input3.c
+./two_pass_compiler input.c
 echo 'Compilation completed.'
 
 # Display output files
