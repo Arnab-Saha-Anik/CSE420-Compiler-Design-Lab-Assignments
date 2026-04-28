@@ -34,6 +34,7 @@ public:
             outcode<<"// - Operations follow the three-address code format"<<endl<<endl;
             outcode<<"// Three Address Code"<<endl<<endl;
             ast_root->generate_code(outcode, symbol_to_temp, temp_count, label_count);
+            outcode<<endl;
             outcode<<"//========== END OF CODE =========="<<endl;
         }
         // TODO: Implement this method
