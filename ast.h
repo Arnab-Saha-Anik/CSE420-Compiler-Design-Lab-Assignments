@@ -64,7 +64,7 @@ public:
 
             string t = "t" + to_string(temp_count++);
             outcode << t << " = " << name << endl;
-            symbol_to_temp[name] = t;     // remember load temp
+            symbol_to_temp[name] = t;
             return t;
         }
         string idx = index->generate_code(outcode, symbol_to_temp, temp_count, label_count);
@@ -89,7 +89,6 @@ public:
                         int& temp_count, int& label_count) const override {
         // TODO: Implement this method
         // Should generate code for constant values
-        (void)symbol_to_temp; (void)label_count;
         string t = "t" + to_string(temp_count++);
         outcode << t << " = " << value << endl;
         return t;
@@ -180,11 +179,6 @@ public:
         }
 
         outcode << lhs->get_name() << " = " << rv << endl;
-
-        // Critical behavior for matching code2:
-        // - After "b = t27", "d = b" should become "d = t27" (no reload)
-        // - But function call args must still load as "t8 = a" etc.
-        // We keep the mapping, but FuncCallNode forces loads for params.
         symbol_to_temp[lhs->get_name()] = rv;
 
         return rv;
@@ -409,7 +403,6 @@ public:
                         int& temp_count, int& label_count) const override {
         // TODO: Implement this method
         // Should generate code for return statements
-        (void)symbol_to_temp; (void)label_count;
         if (expr) {
             string rv = expr->generate_code(outcode, symbol_to_temp, temp_count, label_count);
             outcode << "return " << rv << endl << endl;
@@ -438,7 +431,6 @@ public:
                         int& temp_count, int& label_count) const override {
         // TODO: Implement this method
         // Should generate code for variable declarations
-        (void)symbol_to_temp; (void)temp_count; (void)label_count;
         for (auto& v : vars) {
             if (v.second > 0) outcode << "// Declaration: " << type << " " << v.first << "[" << v.second << "]" << endl;
             else outcode << "// Declaration: " << type << " " << v.first << endl;
@@ -522,7 +514,6 @@ public:
     string generate_code(ofstream& outcode, map<string, string>& symbol_to_temp,
                         int& temp_count, int& label_count) const override {
         // This node doesn't generate code directly
-        (void)outcode; (void)symbol_to_temp; (void)temp_count; (void)label_count;
         return "";
     }
 };
