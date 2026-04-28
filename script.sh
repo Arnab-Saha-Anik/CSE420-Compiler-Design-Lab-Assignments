@@ -17,9 +17,9 @@ echo 'All ready, running the two-pass compiler...'
 echo 'Compilation completed.'
 
 # Display output files
-# echo '------------ Log output ------------'
-# cat 22201299_22201291_log.txt
-# echo '------------ Error output ------------'
-# cat 22201299_22201291_error.txt
-# echo '------------ Three Address Code ------------'
-# cat 22201299_22201291_code.txt
+echo '------------ Log output ------------'
+cat 22201299_22201291_log.txt
+echo '------------ Error output ------------'
+cat 22201299_22201291_error.txt
+echo '------------ Three Address Code ------------'
+cat 22201299_22201291_code.txt
