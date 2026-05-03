@@ -360,9 +360,7 @@ public:
 
         if (condition) {
             string cond = condition->generate_code(outcode, symbol_to_temp, temp_count, label_count);
-        
-            // FIX: condition expression sometimes returns "" even after emitting "tK = ...".
-            // In that case, the correct condition temp is the last one allocated.
+
             if (cond.empty() && temp_count > 0) {
                 cond = "t" + to_string(temp_count - 1);
             }
@@ -373,11 +371,8 @@ public:
 
         outcode << Lbody << ":" << endl;
 
-        // After condition, t12=i is now in cache; allow body to reuse it (no extra t=i)
         if (body) body->generate_code(outcode, symbol_to_temp, temp_count, label_count);
 
-        // update should not reuse old i temp; but code2 update uses t12 and constants,
-        // so keep cache as-is.
         if (update) update->generate_code(outcode, symbol_to_temp, temp_count, label_count);
 
         outcode << "goto " << Lstart << endl;
